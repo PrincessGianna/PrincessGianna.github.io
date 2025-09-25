@@ -13,7 +13,6 @@ const galleryState = {
   isLoading: false,
   loadedCount: 0,
   totalCount: 0,
-  scrollPosition: null,
 };
 
 // DOM元素缓存
@@ -460,60 +459,14 @@ function openModal(imageIndex) {
   galleryState.currentImageIndex = filteredIndex;
   galleryState.isModalOpen = true;
 
-  // 保存当前滚动位置
-  galleryState.scrollPosition =
-    window.pageYOffset || document.documentElement.scrollTop;
-
   // 显示模态框
   utils.addClass(galleryElements.modal, "show");
 
   // 加载并显示图片
   loadModalImage();
 
-  // 禁用背景滚动 - 使用业界标准方法
+  // 禁用背景滚动
   document.body.style.overflow = "hidden";
-  document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
-
-  // 智能居中：确保模态框在最佳观看位置
-  setTimeout(() => {
-    const modalContent = galleryElements.modal.querySelector(".modal-content");
-    const modalRect = modalContent
-      ? modalContent.getBoundingClientRect()
-      : galleryElements.modal.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-
-    // 检查模态框内容是否在视窗的最佳位置
-    const modalTop = modalRect.top;
-    const modalBottom = modalRect.bottom;
-    const modalHeight = modalRect.height;
-
-    // 如果模态框内容不在视窗的理想位置，平滑滚动调整
-    if (
-      modalTop < 50 ||
-      modalBottom > viewportHeight - 50 ||
-      modalHeight > viewportHeight
-    ) {
-      const currentScroll =
-        window.pageYOffset || document.documentElement.scrollTop;
-      let targetScroll;
-
-      if (modalHeight > viewportHeight - 100) {
-        // 如果模态框很高，滚动到顶部，留一点margin
-        targetScroll = currentScroll + modalTop - 50;
-      } else {
-        // 否则居中显示
-        const modalCenter = currentScroll + modalTop + modalHeight / 2;
-        targetScroll = modalCenter - viewportHeight / 2;
-      }
-
-      // 平滑滚动到目标位置
-      window.scrollTo({
-        top: Math.max(0, targetScroll),
-        behavior: "smooth",
-      });
-    }
-  }, 150); // 稍微延迟以确保模态框完全渲染
 
   // 添加模态框打开动画
   if (window.animations) {
@@ -558,15 +511,8 @@ function closeModal() {
     utils.removeClass(galleryElements.modal, "show");
   }
 
-  // 恢复背景滚动 - 业界标准方法
+  // 恢复背景滚动
   document.body.style.overflow = "";
-  document.body.style.paddingRight = "";
-
-  // 恢复滚动位置
-  if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo(0, galleryState.scrollPosition);
-    galleryState.scrollPosition = null;
-  }
 }
 
 /**

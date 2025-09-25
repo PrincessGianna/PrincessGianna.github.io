@@ -498,7 +498,7 @@ const galleryData = [
     id: 62,
     title: "异地之后去青岛找你",
     date: "2024.07.06",
-    image: "../assets/images/2024.07.06.png",
+    image: "../assets/images/2024.07.06.jpg",
     year: "2024",
     description: "你在大声的唱 I love u",
   },

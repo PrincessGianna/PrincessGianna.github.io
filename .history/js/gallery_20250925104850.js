@@ -13,7 +13,6 @@ const galleryState = {
   isLoading: false,
   loadedCount: 0,
   totalCount: 0,
-  scrollPosition: null,
 };
 
 // DOM元素缓存
@@ -86,108 +85,64 @@ function cacheGalleryElements() {
 }
 
 /**
- * 生成单个图片的HTML
- */
-function createImageHTML(imageData, index) {
-  return `
-    <div class="gallery-item" data-year="${imageData.year}" data-category="${
-    imageData.year
-  }" data-index="${index}">
-      <div class="gallery-card">
-        <div class="gallery-image">
-          <img 
-            src="${imageData.image}" 
-            alt="${imageData.title}"
-            loading="lazy"
-          />
-          <div class="image-overlay">
-            <div class="overlay-content">
-              <div class="image-info">
-                <h3 class="image-title">${imageData.title}</h3>
-                <p class="image-date">${imageData.date}</p>
-              </div>
-              <button class="view-btn" onclick="openModal(${index})" data-image="${
-    index + 1
-  }">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-/**
  * 初始化图片数据
  */
 function initializeImageData() {
-  // 检查galleryData是否存在
-  if (typeof galleryData === "undefined") {
-    console.error(
-      "Gallery data not found! Make sure gallery_data.js is loaded."
-    );
-    return;
-  }
+  // 从DOM中提取图片信息
+  galleryState.images = Array.from(galleryElements.galleryItems).map(
+    (item, index) => {
+      const img = item.querySelector("img");
+      const title = item.querySelector(".image-title");
+      const date = item.querySelector(".image-date");
+      const categoryData = item.dataset.category || "";
+      const categories = categoryData
+        .split(" ")
+        .filter((cat) => cat && !cat.match(/^\d{4}$/)); // 过滤掉年份，只保留类别
+      const year = item.dataset.year || "";
 
-  // 生成所有图片的HTML
-  const galleryHTML = galleryData
-    .map((imageData, index) => createImageHTML(imageData, index))
-    .join("");
+      const imageData = {
+        id: index,
+        src: img ? img.src : "",
+        alt: img ? img.alt : "",
+        title: title ? title.textContent : "",
+        date: date ? date.textContent : "",
+        categories: categories,
+        year: year,
+        element: item,
+        loaded: false,
+        description: `这是一张拍摄于${
+          date ? date.textContent : "某个特殊时刻"
+        }的珍贵照片，记录了我们美好的回忆。`,
+      };
 
-  // 插入到画廊容器中
-  if (galleryElements.galleryGrid) {
-    galleryElements.galleryGrid.innerHTML = galleryHTML;
-  }
-
-  // 重新获取生成的图片元素
-  galleryElements.galleryItems =
-    galleryElements.galleryGrid.querySelectorAll(".gallery-item");
-
-  // 转换为内部数据格式
-  galleryState.images = galleryData.map((data, index) => {
-    const element = galleryElements.galleryItems[index];
-
-    const imageData = {
-      id: data.id,
-      src: data.image,
-      alt: data.title,
-      title: data.title,
-      date: data.date,
-      categories: [], // 不使用类别，只使用年份筛选
-      year: data.year,
-      element: element,
-      loaded: false,
-      description: data.description,
-    };
-
-    // 添加点击事件
-    if (element) {
-      element.addEventListener("click", () => openModal(index));
-      element.style.display = "";
-      element.style.opacity = "1";
-      element.style.transform = "translateY(0)";
-      element.hidden = false;
-      utils.addClass(element, "show");
+      console.log(
+        "Initialized image:",
+        index,
+        imageData.title,
+        "Categories:",
+        imageData.categories,
+        "Year:",
+        imageData.year,
+        "Raw category data:",
+        categoryData
+      );
+      return imageData;
     }
-
-    console.log(
-      "Initialized image:",
-      index,
-      imageData.title,
-      "Year:",
-      imageData.year
-    );
-    return imageData;
-  });
+  );
 
   galleryState.filteredImages = [...galleryState.images];
   galleryState.totalCount = galleryState.images.length;
 
-  console.log("Gallery initialized with", galleryState.totalCount, "images");
+  // 确保所有项目初始都是可见的
+  galleryState.images.forEach((image) => {
+    if (image.element) {
+      image.element.style.display = "";
+      image.element.style.opacity = "1";
+      image.element.style.transform = "translateY(0)";
+      image.element.hidden = false;
+      utils.addClass(image.element, "show");
+    }
+  });
 }
 
 // ===============================
@@ -418,8 +373,22 @@ function updateURLWithFilter(filter) {
 function initializeModal() {
   if (!galleryElements.modal) return;
 
-  // 注意：图片事件绑定已经在bindImageEvents函数中处理
-  // 这里只处理模态框的其他功能
+  // 绑定打开模态框事件
+  galleryState.images.forEach((image, index) => {
+    const viewBtn = image.element.querySelector(".view-btn");
+    if (viewBtn) {
+      viewBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal(index);
+      });
+    }
+
+    // 图片点击也能打开模态框
+    const img = image.element.querySelector("img");
+    if (img) {
+      img.addEventListener("click", () => openModal(index));
+    }
+  });
 
   // 绑定关闭模态框事件
   if (galleryElements.modalClose) {
@@ -451,7 +420,7 @@ function openModal(imageIndex) {
   // 需要在filteredImages中找到对应的索引
   const imageData = galleryState.images[imageIndex];
   if (!imageData) return;
-
+  
   const filteredIndex = galleryState.filteredImages.findIndex(
     (img) => img.id === imageData.id
   );
@@ -460,60 +429,14 @@ function openModal(imageIndex) {
   galleryState.currentImageIndex = filteredIndex;
   galleryState.isModalOpen = true;
 
-  // 保存当前滚动位置
-  galleryState.scrollPosition =
-    window.pageYOffset || document.documentElement.scrollTop;
-
   // 显示模态框
   utils.addClass(galleryElements.modal, "show");
 
   // 加载并显示图片
   loadModalImage();
 
-  // 禁用背景滚动 - 使用业界标准方法
+  // 禁用背景滚动
   document.body.style.overflow = "hidden";
-  document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
-
-  // 智能居中：确保模态框在最佳观看位置
-  setTimeout(() => {
-    const modalContent = galleryElements.modal.querySelector(".modal-content");
-    const modalRect = modalContent
-      ? modalContent.getBoundingClientRect()
-      : galleryElements.modal.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-
-    // 检查模态框内容是否在视窗的最佳位置
-    const modalTop = modalRect.top;
-    const modalBottom = modalRect.bottom;
-    const modalHeight = modalRect.height;
-
-    // 如果模态框内容不在视窗的理想位置，平滑滚动调整
-    if (
-      modalTop < 50 ||
-      modalBottom > viewportHeight - 50 ||
-      modalHeight > viewportHeight
-    ) {
-      const currentScroll =
-        window.pageYOffset || document.documentElement.scrollTop;
-      let targetScroll;
-
-      if (modalHeight > viewportHeight - 100) {
-        // 如果模态框很高，滚动到顶部，留一点margin
-        targetScroll = currentScroll + modalTop - 50;
-      } else {
-        // 否则居中显示
-        const modalCenter = currentScroll + modalTop + modalHeight / 2;
-        targetScroll = modalCenter - viewportHeight / 2;
-      }
-
-      // 平滑滚动到目标位置
-      window.scrollTo({
-        top: Math.max(0, targetScroll),
-        behavior: "smooth",
-      });
-    }
-  }, 150); // 稍微延迟以确保模态框完全渲染
 
   // 添加模态框打开动画
   if (window.animations) {
@@ -558,15 +481,8 @@ function closeModal() {
     utils.removeClass(galleryElements.modal, "show");
   }
 
-  // 恢复背景滚动 - 业界标准方法
+  // 恢复背景滚动
   document.body.style.overflow = "";
-  document.body.style.paddingRight = "";
-
-  // 恢复滚动位置
-  if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo(0, galleryState.scrollPosition);
-    galleryState.scrollPosition = null;
-  }
 }
 
 /**
@@ -1234,9 +1150,6 @@ if (document.readyState === "loading") {
     }, 100);
   }
 }
-
-// 为HTML中的onclick提供全局函数
-window.openModal = openModal;
 
 // ===============================
 // 导出画廊接口
