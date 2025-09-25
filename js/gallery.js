@@ -13,6 +13,7 @@ const galleryState = {
   isLoading: false,
   loadedCount: 0,
   totalCount: 0,
+  scrollPosition: null,
 };
 
 // DOM元素缓存
@@ -89,7 +90,9 @@ function cacheGalleryElements() {
  */
 function createImageHTML(imageData, index) {
   return `
-    <div class="gallery-item" data-year="${imageData.year}" data-category="${imageData.year}" data-index="${index}">
+    <div class="gallery-item" data-year="${imageData.year}" data-category="${
+    imageData.year
+  }" data-index="${index}">
       <div class="gallery-card">
         <div class="gallery-image">
           <img 
@@ -103,7 +106,9 @@ function createImageHTML(imageData, index) {
                 <h3 class="image-title">${imageData.title}</h3>
                 <p class="image-date">${imageData.date}</p>
               </div>
-              <button class="view-btn" onclick="openModal(${index})" data-image="${index + 1}">
+              <button class="view-btn" onclick="openModal(${index})" data-image="${
+    index + 1
+  }">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
                 </svg>
@@ -455,14 +460,25 @@ function openModal(imageIndex) {
   galleryState.currentImageIndex = filteredIndex;
   galleryState.isModalOpen = true;
 
+  // 保存当前滚动位置
+  galleryState.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
   // 显示模态框
   utils.addClass(galleryElements.modal, "show");
+
+  // 确保模态框在视口中央显示
+  galleryElements.modal.style.position = 'fixed';
+  galleryElements.modal.style.top = '0';
+  galleryElements.modal.style.left = '0';
 
   // 加载并显示图片
   loadModalImage();
 
-  // 禁用背景滚动
+  // 禁用背景滚动，但保持滚动位置
   document.body.style.overflow = "hidden";
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${galleryState.scrollPosition}px`;
+  document.body.style.width = "100%";
 
   // 添加模态框打开动画
   if (window.animations) {
@@ -507,8 +523,17 @@ function closeModal() {
     utils.removeClass(galleryElements.modal, "show");
   }
 
-  // 恢复背景滚动
+  // 恢复背景滚动和滚动位置
   document.body.style.overflow = "";
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.width = "";
+  
+  // 恢复滚动位置
+  if (typeof galleryState.scrollPosition === 'number') {
+    window.scrollTo(0, galleryState.scrollPosition);
+    galleryState.scrollPosition = null;
+  }
 }
 
 /**
