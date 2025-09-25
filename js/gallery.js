@@ -89,24 +89,27 @@ function cacheGalleryElements() {
  */
 function createImageHTML(imageData, index) {
   return `
-    <div class="gallery-item" data-year="${imageData.year}" data-index="${index}">
-      <div class="image-container">
-        <img 
-          src="${imageData.image}" 
-          alt="${imageData.title}"
-          class="gallery-image"
-          loading="lazy"
-        />
-        <div class="image-overlay">
-          <div class="image-info">
-            <h3 class="image-title">${imageData.title}</h3>
-            <p class="image-date">${imageData.date}</p>
+    <div class="gallery-item" data-year="${imageData.year}" data-category="${imageData.year}" data-index="${index}">
+      <div class="gallery-card">
+        <div class="gallery-image">
+          <img 
+            src="${imageData.image}" 
+            alt="${imageData.title}"
+            loading="lazy"
+          />
+          <div class="image-overlay">
+            <div class="overlay-content">
+              <div class="image-info">
+                <h3 class="image-title">${imageData.title}</h3>
+                <p class="image-date">${imageData.date}</p>
+              </div>
+              <button class="view-btn" onclick="openModal(${index})" data-image="${index + 1}">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
+              </button>
+            </div>
           </div>
-          <button class="view-btn" onclick="openModal(${index})">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.11-11-7.5Z"/>
-            </svg>
-          </button>
         </div>
       </div>
     </div>
@@ -118,15 +121,17 @@ function createImageHTML(imageData, index) {
  */
 function initializeImageData() {
   // 检查galleryData是否存在
-  if (typeof galleryData === 'undefined') {
-    console.error('Gallery data not found! Make sure gallery_data.js is loaded.');
+  if (typeof galleryData === "undefined") {
+    console.error(
+      "Gallery data not found! Make sure gallery_data.js is loaded."
+    );
     return;
   }
 
   // 生成所有图片的HTML
-  const galleryHTML = galleryData.map((imageData, index) => 
-    createImageHTML(imageData, index)
-  ).join('');
+  const galleryHTML = galleryData
+    .map((imageData, index) => createImageHTML(imageData, index))
+    .join("");
 
   // 插入到画廊容器中
   if (galleryElements.galleryGrid) {
@@ -134,12 +139,13 @@ function initializeImageData() {
   }
 
   // 重新获取生成的图片元素
-  galleryElements.galleryItems = galleryElements.galleryGrid.querySelectorAll('.gallery-item');
+  galleryElements.galleryItems =
+    galleryElements.galleryGrid.querySelectorAll(".gallery-item");
 
   // 转换为内部数据格式
   galleryState.images = galleryData.map((data, index) => {
     const element = galleryElements.galleryItems[index];
-    
+
     const imageData = {
       id: data.id,
       src: data.image,
@@ -155,7 +161,7 @@ function initializeImageData() {
 
     // 添加点击事件
     if (element) {
-      element.addEventListener('click', () => openModal(index));
+      element.addEventListener("click", () => openModal(index));
       element.style.display = "";
       element.style.opacity = "1";
       element.style.transform = "translateY(0)";
@@ -163,7 +169,13 @@ function initializeImageData() {
       utils.addClass(element, "show");
     }
 
-    console.log("Initialized image:", index, imageData.title, "Year:", imageData.year);
+    console.log(
+      "Initialized image:",
+      index,
+      imageData.title,
+      "Year:",
+      imageData.year
+    );
     return imageData;
   });
 
