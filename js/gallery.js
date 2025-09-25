@@ -461,24 +461,18 @@ function openModal(imageIndex) {
   galleryState.isModalOpen = true;
 
   // 保存当前滚动位置
-  galleryState.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+  galleryState.scrollPosition =
+    window.pageYOffset || document.documentElement.scrollTop;
 
   // 显示模态框
   utils.addClass(galleryElements.modal, "show");
 
-  // 确保模态框在视口中央显示
-  galleryElements.modal.style.position = 'fixed';
-  galleryElements.modal.style.top = '0';
-  galleryElements.modal.style.left = '0';
-
   // 加载并显示图片
   loadModalImage();
 
-  // 禁用背景滚动，但保持滚动位置
+  // 禁用背景滚动 - 使用业界标准方法
   document.body.style.overflow = "hidden";
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${galleryState.scrollPosition}px`;
-  document.body.style.width = "100%";
+  document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
 
   // 添加模态框打开动画
   if (window.animations) {
@@ -523,14 +517,12 @@ function closeModal() {
     utils.removeClass(galleryElements.modal, "show");
   }
 
-  // 恢复背景滚动和滚动位置
+  // 恢复背景滚动 - 业界标准方法
   document.body.style.overflow = "";
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.width = "";
+  document.body.style.paddingRight = "";
   
   // 恢复滚动位置
-  if (typeof galleryState.scrollPosition === 'number') {
+  if (typeof galleryState.scrollPosition === "number") {
     window.scrollTo(0, galleryState.scrollPosition);
     galleryState.scrollPosition = null;
   }
