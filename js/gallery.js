@@ -85,64 +85,92 @@ function cacheGalleryElements() {
 }
 
 /**
+ * 生成单个图片的HTML
+ */
+function createImageHTML(imageData, index) {
+  return `
+    <div class="gallery-item" data-year="${imageData.year}" data-index="${index}">
+      <div class="image-container">
+        <img 
+          src="${imageData.image}" 
+          alt="${imageData.title}"
+          class="gallery-image"
+          loading="lazy"
+        />
+        <div class="image-overlay">
+          <div class="image-info">
+            <h3 class="image-title">${imageData.title}</h3>
+            <p class="image-date">${imageData.date}</p>
+          </div>
+          <button class="view-btn" onclick="openModal(${index})">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.11-11-7.5Z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
  * 初始化图片数据
  */
 function initializeImageData() {
-  // 从DOM中提取图片信息
-  galleryState.images = Array.from(galleryElements.galleryItems).map(
-    (item, index) => {
-      const img = item.querySelector("img");
-      const title = item.querySelector(".image-title");
-      const date = item.querySelector(".image-date");
-      const categoryData = item.dataset.category || "";
-      const categories = categoryData
-        .split(" ")
-        .filter((cat) => cat && !cat.match(/^\d{4}$/)); // 过滤掉年份，只保留类别
-      const year = item.dataset.year || "";
+  // 检查galleryData是否存在
+  if (typeof galleryData === 'undefined') {
+    console.error('Gallery data not found! Make sure gallery_data.js is loaded.');
+    return;
+  }
 
-      const imageData = {
-        id: index,
-        src: img ? img.src : "",
-        alt: img ? img.alt : "",
-        title: title ? title.textContent : "",
-        date: date ? date.textContent : "",
-        categories: categories,
-        year: year,
-        element: item,
-        loaded: false,
-        description: `这是一张拍摄于${
-          date ? date.textContent : "某个特殊时刻"
-        }的珍贵照片，记录了我们美好的回忆。`,
-      };
+  // 生成所有图片的HTML
+  const galleryHTML = galleryData.map((imageData, index) => 
+    createImageHTML(imageData, index)
+  ).join('');
 
-      console.log(
-        "Initialized image:",
-        index,
-        imageData.title,
-        "Categories:",
-        imageData.categories,
-        "Year:",
-        imageData.year,
-        "Raw category data:",
-        categoryData
-      );
-      return imageData;
+  // 插入到画廊容器中
+  if (galleryElements.galleryGrid) {
+    galleryElements.galleryGrid.innerHTML = galleryHTML;
+  }
+
+  // 重新获取生成的图片元素
+  galleryElements.galleryItems = galleryElements.galleryGrid.querySelectorAll('.gallery-item');
+
+  // 转换为内部数据格式
+  galleryState.images = galleryData.map((data, index) => {
+    const element = galleryElements.galleryItems[index];
+    
+    const imageData = {
+      id: data.id,
+      src: data.image,
+      alt: data.title,
+      title: data.title,
+      date: data.date,
+      categories: [], // 不使用类别，只使用年份筛选
+      year: data.year,
+      element: element,
+      loaded: false,
+      description: data.description,
+    };
+
+    // 添加点击事件
+    if (element) {
+      element.addEventListener('click', () => openModal(index));
+      element.style.display = "";
+      element.style.opacity = "1";
+      element.style.transform = "translateY(0)";
+      element.hidden = false;
+      utils.addClass(element, "show");
     }
-  );
+
+    console.log("Initialized image:", index, imageData.title, "Year:", imageData.year);
+    return imageData;
+  });
 
   galleryState.filteredImages = [...galleryState.images];
   galleryState.totalCount = galleryState.images.length;
 
-  // 确保所有项目初始都是可见的
-  galleryState.images.forEach((image) => {
-    if (image.element) {
-      image.element.style.display = "";
-      image.element.style.opacity = "1";
-      image.element.style.transform = "translateY(0)";
-      image.element.hidden = false;
-      utils.addClass(image.element, "show");
-    }
-  });
+  console.log("Gallery initialized with", galleryState.totalCount, "images");
 }
 
 // ===============================
@@ -406,7 +434,7 @@ function openModal(imageIndex) {
   // 需要在filteredImages中找到对应的索引
   const imageData = galleryState.images[imageIndex];
   if (!imageData) return;
-  
+
   const filteredIndex = galleryState.filteredImages.findIndex(
     (img) => img.id === imageData.id
   );
@@ -1136,6 +1164,9 @@ if (document.readyState === "loading") {
     }, 100);
   }
 }
+
+// 为HTML中的onclick提供全局函数
+window.openModal = openModal;
 
 // ===============================
 // 导出画廊接口

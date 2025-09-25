@@ -710,6 +710,5 @@ window.app = {
   togglePlayPause,
   openMobileMenu,
   closeMobileMenu,
-  showTagModal,
   initializeScrollAnimations,
 };
