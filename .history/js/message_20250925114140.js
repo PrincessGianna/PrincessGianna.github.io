@@ -12,9 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // 信封点击事件
   envelope.addEventListener("click", function () {
     // 保存当前滚动位置
-    originalScrollPosition =
-      window.pageYOffset || document.documentElement.scrollTop;
-
+    originalScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    
     // 添加打开动画
     envelope.classList.add("opening");
 
@@ -27,26 +26,19 @@ document.addEventListener("DOMContentLoaded", function () {
       // 智能居中：确保模态框在最佳观看位置
       setTimeout(() => {
         const modalContainer = modal.querySelector(".modal-container");
-        const modalRect = modalContainer
-          ? modalContainer.getBoundingClientRect()
-          : modal.getBoundingClientRect();
+        const modalRect = modalContainer ? modalContainer.getBoundingClientRect() : modal.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
-
+        
         // 检查模态框内容是否在视窗的最佳位置
         const modalTop = modalRect.top;
         const modalBottom = modalRect.bottom;
         const modalHeight = modalRect.height;
-
+        
         // 如果模态框内容不在视窗的理想位置，平滑滚动调整
-        if (
-          modalTop < 50 ||
-          modalBottom > viewportHeight - 50 ||
-          modalHeight > viewportHeight
-        ) {
-          const currentScroll =
-            window.pageYOffset || document.documentElement.scrollTop;
+        if (modalTop < 50 || modalBottom > viewportHeight - 50 || modalHeight > viewportHeight) {
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
           let targetScroll;
-
+          
           if (modalHeight > viewportHeight - 100) {
             // 如果模态框很高，滚动到顶部，留一点margin
             targetScroll = currentScroll + modalTop - 50;
@@ -55,11 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const modalCenter = currentScroll + modalTop + modalHeight / 2;
             targetScroll = modalCenter - viewportHeight / 2;
           }
-
+          
           // 平滑滚动到目标位置
           window.scrollTo({
             top: Math.max(0, targetScroll),
-            behavior: "smooth",
+            behavior: "smooth"
           });
         }
       }, 150); // 稍微延迟以确保模态框完全渲染
@@ -79,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 恢复到原始滚动位置
     window.scrollTo({
       top: originalScrollPosition,
-      behavior: "smooth",
+      behavior: "smooth"
     });
 
     // 重置手写动画
