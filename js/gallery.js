@@ -373,22 +373,8 @@ function updateURLWithFilter(filter) {
 function initializeModal() {
   if (!galleryElements.modal) return;
 
-  // 绑定打开模态框事件
-  galleryState.images.forEach((image, index) => {
-    const viewBtn = image.element.querySelector(".view-btn");
-    if (viewBtn) {
-      viewBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        openModal(index);
-      });
-    }
-
-    // 图片点击也能打开模态框
-    const img = image.element.querySelector("img");
-    if (img) {
-      img.addEventListener("click", () => openModal(index));
-    }
-  });
+  // 注意：图片事件绑定已经在bindImageEvents函数中处理
+  // 这里只处理模态框的其他功能
 
   // 绑定关闭模态框事件
   if (galleryElements.modalClose) {
@@ -416,8 +402,13 @@ function initializeModal() {
  * 打开模态框
  */
 function openModal(imageIndex) {
+  // imageIndex是图片在galleryState.images中的索引
+  // 需要在filteredImages中找到对应的索引
+  const imageData = galleryState.images[imageIndex];
+  if (!imageData) return;
+  
   const filteredIndex = galleryState.filteredImages.findIndex(
-    (img) => img.id === imageIndex
+    (img) => img.id === imageData.id
   );
   if (filteredIndex === -1) return;
 
