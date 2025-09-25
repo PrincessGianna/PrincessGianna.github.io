@@ -6,8 +6,7 @@ const galleryData = [
     date: "2022.11.07",
     image: "../assets/images/2022.11.07.jpg",
     year: "2022",
-    description:
-      "这是那天在battersea park看烟花时，我们的合照，拍摄于2022.11.07",
+    description: "这是那天在battersea park看烟花时，我们的合照，拍摄于2022.11.07",
   },
   {
     id: 2,
@@ -95,8 +94,7 @@ const galleryData = [
     date: "2023.09.29",
     image: "../assets/images/2023.09.29.jpg",
     year: "2023",
-    description:
-      "那是我陪你过的第一个生日，陪你吃饭，陪你点蜡烛，给你唱生日歌。",
+    description: "那是我陪你过的第一个生日，陪你吃饭，陪你点蜡烛，给你唱生日歌。",
   },
   {
     id: 13,
@@ -296,8 +294,7 @@ const galleryData = [
     date: "2024.01.05(3)",
     image: "../assets/images/2024.01.05(3).jpg",
     year: "2024",
-    description:
-      "那天晚上我们一起在零下20度里等极光，放着绿光也没等来极光，不过等来了满天星，下次，一定一起去看极光",
+    description: "那天晚上我们一起在零下20度里等极光，放着绿光也没等来极光，不过等来了满天星，下次，一定一起去看极光",
   },
   {
     id: 38,
@@ -305,8 +302,7 @@ const galleryData = [
     date: "2024.01.06",
     image: "../assets/images/2024.01.06.jpg",
     year: "2024",
-    description:
-      "在黑沙滩被吹麻了，还记得那个穿吊带拍照的小姐姐嘛，我们真像老年人哈哈",
+    description: "在黑沙滩被吹麻了，还记得那个穿吊带拍照的小姐姐嘛，我们真像老年人哈哈",
   },
   {
     id: 39,
@@ -314,8 +310,7 @@ const galleryData = [
     date: "2024.01.06(2)",
     image: "../assets/images/2024.01.06(2).jpg",
     year: "2024",
-    description:
-      "也是在黑沙滩，那是还不太会用相机拍照，现在厉害多了，有机会就给你拍",
+    description: "也是在黑沙滩，那是还不太会用相机拍照，现在厉害多了，有机会就给你拍",
   },
   {
     id: 40,
@@ -467,8 +462,7 @@ const galleryData = [
     date: "2024.3.24(3)",
     image: "../assets/images/2024.3.24(3).jpg",
     year: "2024",
-    description:
-      "在米开朗基罗广场上突遇暴雨，我们站在屋檐下，你喝了点酒，一直唧唧咋咋的很可爱。",
+    description: "在米开朗基罗广场上突遇暴雨，我们站在屋檐下，你喝了点酒，一直唧唧咋咋的很可爱。",
   },
   {
     id: 59,
@@ -564,8 +558,7 @@ const galleryData = [
     date: "2025.5.10",
     image: "../assets/images/2025.5.10.jpg",
     year: "2025",
-    description:
-      "那天陪你在北京闲逛，你坐在地铁上，我低头看你，你在看我们的合照",
+    description: "那天陪你在北京闲逛，你坐在地铁上，我低头看你，你在看我们的合照",
   },
   {
     id: 71,
@@ -573,7 +566,6 @@ const galleryData = [
     date: "2025.5.10(2)",
     image: "../assets/images/2025.5.10(2).jpg",
     year: "2025",
-    description:
-      "相聚时间很多，又匆匆送你回家，如果没记错的话，那是我们最后一次见面。距离现在我们已经142天没见了。",
+    description: "相聚时间很多，又匆匆送你回家，如果没记错的话，那是我们最后一次见面。距离现在我们已经142天没见了。",
   },
 ];

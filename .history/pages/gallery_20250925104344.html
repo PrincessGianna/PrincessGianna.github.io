@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我们走过的路 - 我们的故事</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/animations.css" />
+  </head>
+  <body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h3>Princess Gianna</h3>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="../index.html" class="nav-link">首页</a>
+            </li>
+            <li class="nav-item">
+              <a href="about.html" class="nav-link">关于我们</a>
+            </li>
+            <li class="nav-item">
+              <a href="gallery.html" class="nav-link active">我们走过的路</a>
+            </li>
+            <li class="nav-item">
+              <a href="impression.html" class="nav-link">我眼中的你</a>
+            </li>
+            <li class="nav-item">
+              <a href="message.html" class="nav-link">想对你说</a>
+            </li>
+          </ul>
+        </div>
+        <div class="nav-toggle" id="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">我们走过的路</h1>
+        <p class="page-subtitle">留住每一个美好的瞬间，记录我们的爱情故事</p>
+      </div>
+    </header>
+
+    <!-- 筛选标签栏 -->
+    <section class="filter-section">
+      <div class="filter-container">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">
+            <span class="tab-text">全部</span>
+            <span class="tab-count">72</span>
+          </button>
+          <button class="filter-tab" data-filter="2025">
+            <span class="tab-text">2025年</span>
+            <span class="tab-count">3</span>
+          </button>
+          <button class="filter-tab" data-filter="2024">
+            <span class="tab-text">2024年</span>
+            <span class="tab-count">35</span>
+          </button>
+          <button class="filter-tab" data-filter="2023">
+            <span class="tab-text">2023年</span>
+            <span class="tab-count">33</span>
+          </button>
+          <button class="filter-tab" data-filter="2022">
+            <span class="tab-text">2022年</span>
+            <span class="tab-count">1</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 照片网格容器 -->
+    <main class="gallery-container">
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- JavaScript将动态生成照片内容 -->
+      </div>
+    </main>
+
+    <!-- 照片模态框 -->
+    <div class="modal" id="photo-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </button>
+
+        <div class="modal-image-container">
+          <img class="modal-image" id="modal-image" src="" alt="" />
+          <div class="modal-nav">
+            <button class="modal-nav-btn modal-prev" id="modal-prev">
+              <svg viewBox="0 0 24 24">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+              </svg>
+            </button>
+            <button class="modal-nav-btn modal-next" id="modal-next">
+              <svg viewBox="0 0 24 24">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-info">
+          <h3 class="modal-title" id="modal-title">标题</h3>
+          <p class="modal-date" id="modal-date">日期</p>
+          <p class="modal-description" id="modal-description">描述内容</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript 文件 -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/animations.js"></script>
+    <script src="../js/gallery_data.js"></script>
+    <script src="../js/gallery.js"></script>
+    <script src="../js/main.js"></script>
+
+    <script>
+      // 动态生成照片网格
+      document.addEventListener("DOMContentLoaded", function () {
+        const galleryGrid = document.getElementById("gallery-grid");
+
+        galleryData.forEach((photo, index) => {
+          const galleryItem = document.createElement("div");
+          galleryItem.className = "gallery-item";
+          galleryItem.setAttribute("data-category", photo.year);
+          galleryItem.setAttribute("data-year", photo.year);
+
+          galleryItem.innerHTML = `
+                    <div class="gallery-card">
+                        <div class="gallery-image">
+                            <img src="${photo.image}" alt="${
+            photo.title
+          }" loading="lazy">
+                            <div class="image-overlay">
+                                <div class="overlay-content">
+                                    <h3 class="image-title">${photo.title}</h3>
+                                    <p class="image-date">${photo.date}</p>
+                                    <button class="view-btn" data-image="${
+                                      index + 1
+                                    }">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+          galleryGrid.appendChild(galleryItem);
+        });
+
+        // 重新初始化筛选功能
+        initializeFilters();
+
+        // 重新初始化模态框功能
+        initializeModal();
+      });
+
+      // 筛选功能
+      function initializeFilters() {
+        const filterTabs = document.querySelectorAll(".filter-tab");
+        const galleryItems = document.querySelectorAll(".gallery-item");
+
+        filterTabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            // 移除所有活动状态
+            filterTabs.forEach((t) => t.classList.remove("active"));
+            // 添加当前活动状态
+            tab.classList.add("active");
+
+            const filter = tab.getAttribute("data-filter");
+
+            galleryItems.forEach((item) => {
+              if (
+                filter === "all" ||
+                item.getAttribute("data-category") === filter
+              ) {
+                item.style.display = "block";
+              } else {
+                item.style.display = "none";
+              }
+            });
+          });
+        });
+      }
+
+      // 模态框功能
+      function initializeModal() {
+        const modal = document.getElementById("photo-modal");
+        const modalImage = document.getElementById("modal-image");
+        const modalTitle = document.getElementById("modal-title");
+        const modalDate = document.getElementById("modal-date");
+        const modalDescription = document.getElementById("modal-description");
+        const modalClose = document.getElementById("modal-close");
+        const modalBackdrop = document.querySelector(".modal-backdrop");
+
+        let currentImageIndex = 0;
+
+        // 打开模态框
+        document.addEventListener("click", (e) => {
+          if (e.target.closest(".view-btn")) {
+            const btn = e.target.closest(".view-btn");
+            currentImageIndex = parseInt(btn.getAttribute("data-image")) - 1;
+            showModal(currentImageIndex);
+          }
+        });
+
+        // 关闭模态框
+        function closeModal() {
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
+        }
+
+        modalClose.addEventListener("click", closeModal);
+        modalBackdrop.addEventListener("click", closeModal);
+
+        // 显示模态框
+        function showModal(index) {
+          const photo = galleryData[index];
+          modalImage.src = photo.image;
+          modalTitle.textContent = photo.title;
+          modalDate.textContent = photo.date;
+          modalDescription.textContent = photo.description;
+
+          modal.style.display = "flex";
+          document.body.style.overflow = "hidden";
+        }
+
+        // 上一张/下一张
+        document.getElementById("modal-prev").addEventListener("click", () => {
+          currentImageIndex =
+            currentImageIndex > 0
+              ? currentImageIndex - 1
+              : galleryData.length - 1;
+          showModal(currentImageIndex);
+        });
+
+        document.getElementById("modal-next").addEventListener("click", () => {
+          currentImageIndex =
+            currentImageIndex < galleryData.length - 1
+              ? currentImageIndex + 1
+              : 0;
+          showModal(currentImageIndex);
+        });
+
+        // 键盘导航
+        document.addEventListener("keydown", (e) => {
+          if (modal.style.display === "flex") {
+            if (e.key === "ArrowLeft") {
+              document.getElementById("modal-prev").click();
+            } else if (e.key === "ArrowRight") {
+              document.getElementById("modal-next").click();
+            } else if (e.key === "Escape") {
+              closeModal();
+            }
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
