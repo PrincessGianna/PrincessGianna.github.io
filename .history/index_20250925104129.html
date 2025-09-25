@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生日纪念 - 我们的故事</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+  </head>
+  <body>
+    <!-- 背景容器 -->
+    <div class="background-container">
+      <div class="background-image"></div>
+      <div class="background-particles"></div>
+      <div class="background-shapes"></div>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h3>Princess Gianna</h3>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link active">首页</a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/about.html" class="nav-link">关于我们</a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/gallery.html" class="nav-link">我们走过的路</a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/impression.html" class="nav-link">我眼中的你</a>
+            </li>
+            <li class="nav-item">
+              <a href="pages/message.html" class="nav-link">想对你说</a>
+            </li>
+          </ul>
+        </div>
+        <div class="nav-toggle" id="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <main class="hero-section">
+      <div class="hero-content">
+        <!-- 诗意文字块 - 顶部 -->
+        <div class="text-blocks text-blocks-top">
+          <div class="text-block" data-delay="200">
+            <h1 class="hero-title">Princess Gianna</h1>
+            <p class="hero-subtitle">生日快乐我的公主</p>
+          </div>
+          <div class="text-block" data-delay="400">
+            <p class="hero-text">愿你永远明媚如初夏阳光</p>
+          </div>
+        </div>
+
+        <!-- 生日祝福横幅 - 中部 -->
+        <div class="birthday-banner" data-delay="600">
+          <h1 class="birthday-text">Happy Birthday!</h1>
+        </div>
+
+        <!-- 诗意文字块 - 中下部 -->
+        <div class="text-blocks text-blocks-bottom">
+          <div class="text-block" data-delay="800">
+            <p class="hero-text">愿时光不老，你我不散</p>
+          </div>
+          <div class="text-block" data-delay="1000">
+            <p class="hero-text">在这个特别的日子里，想对你说声生日快乐</p>
+          </div>
+        </div>
+
+        <!-- 中央交互按钮 - 下方 -->
+        <div class="hero-button-container" data-delay="1200">
+          <button class="hero-button" id="hero-button">
+            <span class="button-text">开始我们的故事</span>
+            <div class="button-ripple"></div>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 加载动画 -->
+    <div class="loading-screen" id="loading-screen">
+      <div class="loading-content">
+        <div class="loading-heart">
+          <div class="heart-shape"></div>
+        </div>
+        <div class="loading-text">加载中...</div>
+        <div class="loading-progress">
+          <div class="progress-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript 文件 -->
+    <script src="js/utils.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
