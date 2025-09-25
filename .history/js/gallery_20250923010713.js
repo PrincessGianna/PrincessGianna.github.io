@@ -1,0 +1,1136 @@
+/**
+ * 画廊功能控制器
+ * 负责照片画廊的筛选、模态框、懒加载等功能
+ */
+
+// 画廊状态管理
+const galleryState = {
+  currentFilter: "all",
+  currentImageIndex: 0,
+  images: [],
+  filteredImages: [],
+  isModalOpen: false,
+  isLoading: false,
+  loadedCount: 0,
+  totalCount: 0,
+};
+
+// DOM元素缓存
+const galleryElements = {
+  filterTabs: null,
+  galleryGrid: null,
+  galleryItems: null,
+  modal: null,
+  modalImage: null,
+  modalTitle: null,
+  modalDate: null,
+  modalDescription: null,
+  modalClose: null,
+  modalPrev: null,
+  modalNext: null,
+  loadMoreBtn: null,
+};
+
+// ===============================
+// 画廊初始化
+// ===============================
+
+/**
+ * 初始化画廊功能
+ */
+function initializeGallery() {
+  // 缓存DOM元素
+  cacheGalleryElements();
+
+  // 初始化图片数据
+  initializeImageData();
+
+  // 初始化筛选功能
+  initializeFilters();
+
+  // 初始化模态框
+  initializeModal();
+
+  // 初始化懒加载
+  initializeLazyLoading();
+
+  // 初始化加载更多功能
+  initializeLoadMore();
+
+  // 初始化键盘导航
+  initializeKeyboardNavigation();
+
+  // 初始化触摸手势
+  initializeTouchGestures();
+
+  console.log("Gallery initialized");
+}
+
+/**
+ * 缓存DOM元素
+ */
+function cacheGalleryElements() {
+  galleryElements.filterTabs = utils.$$(".filter-tab");
+  galleryElements.galleryGrid = utils.$("#gallery-grid");
+  galleryElements.galleryItems = utils.$$(".gallery-item");
+  galleryElements.modal = utils.$("#photo-modal");
+  galleryElements.modalImage = utils.$("#modal-image");
+  galleryElements.modalTitle = utils.$("#modal-title");
+  galleryElements.modalDate = utils.$("#modal-date");
+  galleryElements.modalDescription = utils.$("#modal-description");
+  galleryElements.modalClose = utils.$("#modal-close");
+  galleryElements.modalPrev = utils.$("#modal-prev");
+  galleryElements.modalNext = utils.$("#modal-next");
+  galleryElements.loadMoreBtn = utils.$("#load-more-btn");
+}
+
+/**
+ * 初始化图片数据
+ */
+function initializeImageData() {
+  // 从DOM中提取图片信息
+  galleryState.images = Array.from(galleryElements.galleryItems).map(
+    (item, index) => {
+      const img = item.querySelector("img");
+      const title = item.querySelector(".image-title");
+      const date = item.querySelector(".image-date");
+      const categories = item.dataset.category
+        ? item.dataset.category.split(" ")
+        : [];
+
+      const imageData = {
+        id: index,
+        src: img ? img.src : "",
+        alt: img ? img.alt : "",
+        title: title ? title.textContent : "",
+        date: date ? date.textContent : "",
+        categories: categories,
+        year: item.dataset.year || "",
+        element: item,
+        loaded: false,
+        description: `这是一张拍摄于${
+          date ? date.textContent : "某个特殊时刻"
+        }的珍贵照片，记录了我们美好的回忆。`,
+      };
+
+      console.log(
+        "Initialized image:",
+        index,
+        imageData.title,
+        "Categories:",
+        imageData.categories,
+        "Year:",
+        imageData.year
+      );
+      return imageData;
+    }
+  );
+
+  galleryState.filteredImages = [...galleryState.images];
+  galleryState.totalCount = galleryState.images.length;
+
+  // 确保所有项目初始都是可见的
+  galleryState.images.forEach((image) => {
+    if (image.element) {
+      image.element.style.display = "";
+      image.element.style.opacity = "1";
+      image.element.style.transform = "translateY(0)";
+      image.element.hidden = false;
+      utils.addClass(image.element, "show");
+    }
+  });
+}
+
+// ===============================
+// 筛选功能
+// ===============================
+
+/**
+ * 初始化筛选功能
+ */
+function initializeFilters() {
+  if (!galleryElements.filterTabs.length) return;
+
+  galleryElements.filterTabs.forEach((tab) => {
+    tab.addEventListener("click", handleFilterClick);
+  });
+
+  // 更新筛选计数
+  updateFilterCounts();
+
+  // 设置初始筛选状态
+  applyFilter(galleryState.currentFilter);
+}
+
+/**
+ * 处理筛选标签点击
+ */
+function handleFilterClick(e) {
+  const tab = e.currentTarget;
+  const filter = tab.dataset.filter;
+
+  console.log(
+    "Filter clicked:",
+    filter,
+    "Current filter:",
+    galleryState.currentFilter
+  );
+
+  if (filter === galleryState.currentFilter) return;
+
+  // 更新活动标签
+  updateActiveFilterTab(tab);
+
+  // 应用筛选
+  applyFilter(filter);
+
+  // 更新URL（可选）
+  updateURLWithFilter(filter);
+}
+
+/**
+ * 更新活动筛选标签
+ */
+function updateActiveFilterTab(activeTab) {
+  galleryElements.filterTabs.forEach((tab) => {
+    utils.removeClass(tab, "active");
+  });
+  utils.addClass(activeTab, "active");
+}
+
+/**
+ * 应用筛选
+ */
+function applyFilter(filter) {
+  console.log("Applying filter:", filter);
+  galleryState.currentFilter = filter;
+
+  // 筛选图片
+  if (filter === "all") {
+    galleryState.filteredImages = [...galleryState.images];
+  } else {
+    galleryState.filteredImages = galleryState.images.filter((image) => {
+      console.log(
+        "Checking image:",
+        image.title,
+        "Categories:",
+        image.categories,
+        "Year:",
+        image.year,
+        "Filter:",
+        filter
+      );
+
+      // 检查年份筛选（例如：'2024', '2023'等）
+      if (filter.match(/^\d{4}$/)) {
+        const matches = image.year === filter;
+        console.log("Year filter match:", matches);
+        return matches;
+      }
+      // 检查类别筛选（例如：'travel', 'daily', 'special'）
+      const matches = image.categories.includes(filter);
+      console.log("Category filter match:", matches);
+      return matches;
+    });
+  }
+
+  console.log(
+    "Filtered images:",
+    galleryState.filteredImages.length,
+    "out of",
+    galleryState.images.length
+  );
+
+  // 应用筛选动画
+  animateFilterTransition();
+
+  // 更新计数
+  updateFilterCounts();
+}
+
+/**
+ * 筛选过渡动画
+ */
+function animateFilterTransition() {
+  const animationDelay = 50;
+  const raf = window.requestAnimationFrame
+    ? window.requestAnimationFrame.bind(window)
+    : (cb) => setTimeout(cb, 0);
+
+  console.log(
+    "Starting filter animation with",
+    galleryState.filteredImages.length,
+    "filtered images"
+  );
+
+  galleryState.images.forEach((image, index) => {
+    const item = image.element;
+    if (!item) return;
+
+    const shouldShow = galleryState.filteredImages.some(
+      (filteredImage) => filteredImage.id === image.id
+    );
+    console.log("Image", image.title, "should show:", shouldShow);
+
+    if (shouldShow) {
+      // 显示元素
+      item.hidden = false;
+      item.style.display = "";
+      item.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+
+      raf(() => {
+        item.style.opacity = "1";
+        item.style.transform = "translateY(0)";
+
+        setTimeout(() => {
+          utils.addClass(item, "show");
+        }, index * animationDelay);
+      });
+    } else {
+      // 隐藏元素
+      utils.removeClass(item, "show");
+      item.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+      item.style.opacity = "0";
+      item.style.transform = "translateY(30px)";
+
+      setTimeout(() => {
+        if (item.style.opacity === "0") {
+          // 确保没有被其他操作改变
+          item.style.display = "none";
+          item.hidden = true;
+        }
+      }, 300);
+    }
+  });
+
+  raf(rearrangeGrid);
+}
+
+/**
+ * 重新排列网格
+ */
+function rearrangeGrid() {
+  if (!galleryElements.galleryGrid) return;
+
+  // 使用CSS Grid的自动排列功能
+  galleryElements.galleryGrid.style.opacity = "0.8";
+
+  setTimeout(() => {
+    galleryElements.galleryGrid.style.opacity = "1";
+  }, 150);
+}
+
+/**
+ * 更新筛选计数
+ */
+function updateFilterCounts() {
+  galleryElements.filterTabs.forEach((tab) => {
+    const filter = tab.dataset.filter;
+    const countElement = tab.querySelector(".tab-count");
+
+    if (countElement) {
+      let count = 0;
+
+      if (filter === "all") {
+        count = galleryState.images.length;
+      } else {
+        count = galleryState.images.filter((image) => {
+          // 检查年份筛选（例如：'2024', '2023'等）
+          if (filter.match(/^\d{4}$/)) {
+            return image.year === filter;
+          }
+          // 检查类别筛选（例如：'travel', 'daily', 'special'）
+          return image.categories.includes(filter);
+        }).length;
+      }
+
+      countElement.textContent = count;
+    }
+  });
+}
+
+/**
+ * 更新URL
+ */
+function updateURLWithFilter(filter) {
+  const url = new URL(window.location);
+  url.searchParams.set("filter", filter);
+  window.history.replaceState({}, "", url);
+}
+
+// ===============================
+// 模态框功能
+// ===============================
+
+/**
+ * 初始化模态框
+ */
+function initializeModal() {
+  if (!galleryElements.modal) return;
+
+  // 绑定打开模态框事件
+  galleryState.images.forEach((image, index) => {
+    const viewBtn = image.element.querySelector(".view-btn");
+    if (viewBtn) {
+      viewBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal(index);
+      });
+    }
+
+    // 图片点击也能打开模态框
+    const img = image.element.querySelector("img");
+    if (img) {
+      img.addEventListener("click", () => openModal(index));
+    }
+  });
+
+  // 绑定关闭模态框事件
+  if (galleryElements.modalClose) {
+    galleryElements.modalClose.addEventListener("click", closeModal);
+  }
+
+  // 绑定导航按钮
+  if (galleryElements.modalPrev) {
+    galleryElements.modalPrev.addEventListener("click", showPreviousImage);
+  }
+
+  if (galleryElements.modalNext) {
+    galleryElements.modalNext.addEventListener("click", showNextImage);
+  }
+
+  // 点击背景关闭模态框
+  galleryElements.modal.addEventListener("click", (e) => {
+    if (e.target === galleryElements.modal) {
+      closeModal();
+    }
+  });
+}
+
+/**
+ * 打开模态框
+ */
+function openModal(imageIndex) {
+  const filteredIndex = galleryState.filteredImages.findIndex(
+    (img) => img.id === imageIndex
+  );
+  if (filteredIndex === -1) return;
+
+  galleryState.currentImageIndex = filteredIndex;
+  galleryState.isModalOpen = true;
+
+  // 显示模态框
+  utils.addClass(galleryElements.modal, "show");
+
+  // 加载并显示图片
+  loadModalImage();
+
+  // 禁用背景滚动
+  document.body.style.overflow = "hidden";
+
+  // 添加模态框打开动画
+  if (window.animations) {
+    const modalContent = galleryElements.modal.querySelector(".modal-content");
+    utils.addClass(modalContent, "modal-enter");
+  }
+}
+
+/**
+ * 关闭模态框
+ */
+function closeModal() {
+  if (!galleryState.isModalOpen) return;
+
+  galleryState.isModalOpen = false;
+
+  // 添加关闭动画
+  if (window.animations) {
+    const modalContent = galleryElements.modal.querySelector(".modal-content");
+    utils.addClass(modalContent, "modal-exit");
+    utils.removeClass(modalContent, "modal-enter");
+
+    setTimeout(() => {
+      utils.removeClass(galleryElements.modal, "show");
+      utils.removeClass(modalContent, "modal-exit");
+    }, 200);
+  } else {
+    utils.removeClass(galleryElements.modal, "show");
+  }
+
+  // 恢复背景滚动
+  document.body.style.overflow = "";
+}
+
+/**
+ * 加载模态框图片
+ */
+function loadModalImage() {
+  const currentImage =
+    galleryState.filteredImages[galleryState.currentImageIndex];
+  if (!currentImage) return;
+
+  // 显示加载状态
+  if (galleryElements.modalImage) {
+    galleryElements.modalImage.style.opacity = "0.5";
+  }
+
+  // 预加载图片
+  const img = new Image();
+  img.onload = () => {
+    // 更新模态框内容
+    updateModalContent(currentImage);
+
+    // 恢复图片显示
+    if (galleryElements.modalImage) {
+      galleryElements.modalImage.style.opacity = "1";
+    }
+  };
+
+  img.onerror = () => {
+    console.error("Failed to load image:", currentImage.src);
+    if (galleryElements.modalImage) {
+      galleryElements.modalImage.style.opacity = "1";
+    }
+  };
+
+  img.src = currentImage.src;
+}
+
+/**
+ * 更新模态框内容
+ */
+function updateModalContent(image) {
+  if (galleryElements.modalImage) {
+    galleryElements.modalImage.src = image.src;
+    galleryElements.modalImage.alt = image.alt;
+  }
+
+  if (galleryElements.modalTitle) {
+    galleryElements.modalTitle.textContent = image.title;
+  }
+
+  if (galleryElements.modalDate) {
+    galleryElements.modalDate.textContent = image.date;
+  }
+
+  if (galleryElements.modalDescription) {
+    galleryElements.modalDescription.textContent = image.description;
+  }
+
+  // 更新导航按钮状态
+  updateModalNavigation();
+}
+
+/**
+ * 更新模态框导航
+ */
+function updateModalNavigation() {
+  const isFirst = galleryState.currentImageIndex === 0;
+  const isLast =
+    galleryState.currentImageIndex === galleryState.filteredImages.length - 1;
+
+  if (galleryElements.modalPrev) {
+    galleryElements.modalPrev.style.opacity = isFirst ? "0.5" : "1";
+    galleryElements.modalPrev.style.pointerEvents = isFirst ? "none" : "auto";
+  }
+
+  if (galleryElements.modalNext) {
+    galleryElements.modalNext.style.opacity = isLast ? "0.5" : "1";
+    galleryElements.modalNext.style.pointerEvents = isLast ? "none" : "auto";
+  }
+}
+
+/**
+ * 显示上一张图片
+ */
+function showPreviousImage() {
+  if (galleryState.currentImageIndex > 0) {
+    galleryState.currentImageIndex--;
+    loadModalImage();
+  }
+}
+
+/**
+ * 显示下一张图片
+ */
+function showNextImage() {
+  if (galleryState.currentImageIndex < galleryState.filteredImages.length - 1) {
+    galleryState.currentImageIndex++;
+    loadModalImage();
+  }
+}
+
+// ===============================
+// 懒加载功能
+// ===============================
+
+/**
+ * 初始化懒加载
+ */
+function initializeLazyLoading() {
+  if (!window.IntersectionObserver) {
+    // 降级处理：直接加载所有图片
+    galleryState.images.forEach((image) => {
+      loadImage(image);
+    });
+    return;
+  }
+
+  const lazyLoadObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const item = entry.target;
+          const imageData = galleryState.images.find(
+            (img) => img.element === item
+          );
+
+          if (imageData && !imageData.loaded) {
+            loadImage(imageData);
+            lazyLoadObserver.unobserve(item);
+          }
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "50px",
+    }
+  );
+
+  // 观察所有画廊项目
+  galleryState.images.forEach((image) => {
+    lazyLoadObserver.observe(image.element);
+  });
+}
+
+/**
+ * 加载单张图片
+ */
+function loadImage(imageData) {
+  const img = imageData.element.querySelector("img");
+  if (!img || imageData.loaded) return;
+
+  // 添加加载状态
+  utils.addClass(img, "image-lazy-load");
+
+  // 创建新的图片元素进行预加载
+  const newImg = new Image();
+
+  newImg.onload = () => {
+    // 更新图片源
+    img.src = newImg.src;
+
+    // 添加加载完成状态
+    utils.addClass(img, "loaded");
+    utils.removeClass(img, "image-lazy-load");
+
+    // 更新加载状态
+    imageData.loaded = true;
+    galleryState.loadedCount++;
+
+    // 触发显示动画
+    setTimeout(() => {
+      utils.addClass(imageData.element, "show");
+    }, 100);
+
+    // 更新加载进度
+    updateLoadingProgress();
+  };
+
+  newImg.onerror = () => {
+    console.error("Failed to load image:", imageData.src);
+    utils.removeClass(img, "image-lazy-load");
+  };
+
+  newImg.src = imageData.src;
+}
+
+/**
+ * 更新加载进度
+ */
+function updateLoadingProgress() {
+  const progress = (galleryState.loadedCount / galleryState.totalCount) * 100;
+
+  // 这里可以更新进度条或其他加载指示器
+  console.log(`Loading progress: ${Math.round(progress)}%`);
+
+  if (galleryState.loadedCount === galleryState.totalCount) {
+    console.log("All images loaded");
+    onAllImagesLoaded();
+  }
+}
+
+/**
+ * 所有图片加载完成后的回调
+ */
+function onAllImagesLoaded() {
+  // 启动画廊动画
+  if (window.animations) {
+    galleryState.images.forEach((image, index) => {
+      setTimeout(() => {
+        utils.addClass(image.element, "gallery-loaded");
+      }, index * 50);
+    });
+  }
+
+  // 显示加载更多按钮
+  if (galleryElements.loadMoreBtn) {
+    utils.addClass(galleryElements.loadMoreBtn, "show");
+  }
+}
+
+// ===============================
+// 加载更多功能
+// ===============================
+
+/**
+ * 初始化加载更多功能
+ */
+function initializeLoadMore() {
+  if (!galleryElements.loadMoreBtn) return;
+
+  galleryElements.loadMoreBtn.addEventListener("click", handleLoadMore);
+}
+
+/**
+ * 处理加载更多
+ */
+function handleLoadMore() {
+  if (galleryState.isLoading) return;
+
+  galleryState.isLoading = true;
+
+  // 显示加载状态
+  const spinner = galleryElements.loadMoreBtn.querySelector(".load-spinner");
+  const text = galleryElements.loadMoreBtn.querySelector(".load-text");
+
+  if (spinner) spinner.style.display = "block";
+  if (text) text.textContent = "加载中...";
+
+  // 模拟异步加载
+  setTimeout(() => {
+    loadMoreImages();
+  }, 1500);
+}
+
+/**
+ * 加载更多图片
+ */
+function loadMoreImages() {
+  // 这里可以从服务器获取更多图片
+  // 现在只是模拟添加一些示例图片
+
+  const newImages = generateMoreImages(6);
+
+  newImages.forEach((imageData, index) => {
+    setTimeout(() => {
+      addImageToGallery(imageData);
+    }, index * 100);
+  });
+
+  // 重置加载状态
+  setTimeout(() => {
+    galleryState.isLoading = false;
+
+    const spinner = galleryElements.loadMoreBtn.querySelector(".load-spinner");
+    const text = galleryElements.loadMoreBtn.querySelector(".load-text");
+
+    if (spinner) spinner.style.display = "none";
+    if (text) text.textContent = "加载更多回忆";
+  }, 800);
+}
+
+/**
+ * 生成更多图片数据
+ */
+function generateMoreImages(count) {
+  const categories = ["2024", "2023", "travel", "daily", "special"];
+  const newImages = [];
+
+  for (let i = 0; i < count; i++) {
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)];
+    const imageId = galleryState.images.length + i;
+
+    newImages.push({
+      id: imageId,
+      src: `https://picsum.photos/400/300?random=${imageId + 100}`,
+      alt: `新照片 ${imageId}`,
+      title: `新的美好回忆 ${imageId}`,
+      date: "2024.07.01",
+      categories: [randomCategory],
+      year: randomCategory.match(/\d{4}/) ? randomCategory : "2024",
+      loaded: false,
+      description: `这是第 ${imageId} 张新加载的照片，记录了更多美好时刻。`,
+    });
+  }
+
+  return newImages;
+}
+
+/**
+ * 添加图片到画廊
+ */
+function addImageToGallery(imageData) {
+  // 创建画廊项目元素
+  const galleryItem = createGalleryItemElement(imageData);
+
+  // 添加到DOM
+  if (galleryElements.galleryGrid) {
+    galleryElements.galleryGrid.appendChild(galleryItem);
+  }
+
+  // 更新数据
+  imageData.element = galleryItem;
+  galleryState.images.push(imageData);
+  galleryState.totalCount++;
+
+  // 如果符合当前筛选条件，添加到筛选列表
+  if (
+    galleryState.currentFilter === "all" ||
+    imageData.categories.includes(galleryState.currentFilter) ||
+    imageData.year === galleryState.currentFilter
+  ) {
+    galleryState.filteredImages.push(imageData);
+  }
+
+  // 绑定事件
+  bindImageEvents(imageData);
+
+  // 启动懒加载
+  if (window.IntersectionObserver) {
+    const lazyLoadObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !imageData.loaded) {
+          loadImage(imageData);
+          lazyLoadObserver.unobserve(entry.target);
+        }
+      });
+    });
+
+    lazyLoadObserver.observe(galleryItem);
+  } else {
+    loadImage(imageData);
+  }
+
+  // 入场动画
+  setTimeout(() => {
+    utils.addClass(galleryItem, "show");
+  }, 100);
+
+  // 更新筛选计数
+  updateFilterCounts();
+}
+
+/**
+ * 创建画廊项目元素
+ */
+function createGalleryItemElement(imageData) {
+  const item = utils.createElement("div", "gallery-item fade-in-up");
+  item.dataset.category = imageData.categories.join(" ");
+  item.dataset.year = imageData.year;
+
+  item.innerHTML = `
+    <div class="gallery-card">
+      <div class="gallery-image">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E" alt="${imageData.alt}" loading="lazy">
+        <div class="image-overlay">
+          <div class="overlay-content">
+            <h3 class="image-title">${imageData.title}</h3>
+            <p class="image-date">${imageData.date}</p>
+            <button class="view-btn" data-image="${imageData.id}">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  return item;
+}
+
+/**
+ * 绑定图片事件
+ */
+function bindImageEvents(imageData) {
+  const viewBtn = imageData.element.querySelector(".view-btn");
+  const img = imageData.element.querySelector("img");
+
+  if (viewBtn) {
+    viewBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const imageIndex = galleryState.images.findIndex(
+        (img) => img.id === imageData.id
+      );
+      openModal(imageIndex);
+    });
+  }
+
+  if (img) {
+    img.addEventListener("click", () => {
+      const imageIndex = galleryState.images.findIndex(
+        (img) => img.id === imageData.id
+      );
+      openModal(imageIndex);
+    });
+  }
+}
+
+// ===============================
+// 键盘导航
+// ===============================
+
+/**
+ * 初始化键盘导航
+ */
+function initializeKeyboardNavigation() {
+  document.addEventListener("keydown", handleKeyboardNavigation);
+}
+
+/**
+ * 处理键盘导航
+ */
+function handleKeyboardNavigation(e) {
+  if (!galleryState.isModalOpen) return;
+
+  switch (e.key) {
+    case "ArrowLeft":
+      e.preventDefault();
+      showPreviousImage();
+      break;
+
+    case "ArrowRight":
+      e.preventDefault();
+      showNextImage();
+      break;
+
+    case "Escape":
+      e.preventDefault();
+      closeModal();
+      break;
+
+    case " ":
+      e.preventDefault();
+      showNextImage();
+      break;
+  }
+}
+
+// ===============================
+// 触摸手势
+// ===============================
+
+/**
+ * 初始化触摸手势
+ */
+function initializeTouchGestures() {
+  if (!galleryElements.modal || !utils.device.isTouchDevice()) return;
+
+  let startX = 0;
+  let startY = 0;
+  let isDragging = false;
+
+  galleryElements.modalImage.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isDragging = true;
+  });
+
+  galleryElements.modalImage.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+  });
+
+  galleryElements.modalImage.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    // 检查是否为水平滑动
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+      if (deltaX > 0) {
+        showPreviousImage();
+      } else {
+        showNextImage();
+      }
+    }
+
+    // 检查是否为向下滑动关闭
+    if (deltaY > 100 && Math.abs(deltaX) < 50) {
+      closeModal();
+    }
+
+    isDragging = false;
+  });
+}
+
+// ===============================
+// 工具函数
+// ===============================
+
+/**
+ * 获取图片索引
+ */
+function getImageIndex(imageId) {
+  return galleryState.images.findIndex((img) => img.id === imageId);
+}
+
+/**
+ * 获取筛选后的图片索引
+ */
+function getFilteredImageIndex(imageId) {
+  return galleryState.filteredImages.findIndex((img) => img.id === imageId);
+}
+
+/**
+ * 预加载相邻图片
+ */
+function preloadAdjacentImages() {
+  const current = galleryState.currentImageIndex;
+  const prev = current - 1;
+  const next = current + 1;
+
+  if (prev >= 0) {
+    const prevImage = galleryState.filteredImages[prev];
+    utils.loadImage(prevImage.src);
+  }
+
+  if (next < galleryState.filteredImages.length) {
+    const nextImage = galleryState.filteredImages[next];
+    utils.loadImage(nextImage.src);
+  }
+}
+
+/**
+ * 重置画廊状态
+ */
+function resetGalleryState() {
+  galleryState.currentFilter = "all";
+  galleryState.currentImageIndex = 0;
+  galleryState.isModalOpen = false;
+  galleryState.isLoading = false;
+  galleryState.filteredImages = [...galleryState.images];
+}
+
+// ===============================
+// 公共API
+// ===============================
+
+/**
+ * 添加新图片
+ */
+function addImage(imageData) {
+  addImageToGallery(imageData);
+}
+
+/**
+ * 删除图片
+ */
+function removeImage(imageId) {
+  const index = getImageIndex(imageId);
+  if (index === -1) return;
+
+  const imageData = galleryState.images[index];
+  if (imageData.element) {
+    imageData.element.remove();
+  }
+
+  galleryState.images.splice(index, 1);
+  galleryState.filteredImages = galleryState.filteredImages.filter(
+    (img) => img.id !== imageId
+  );
+  galleryState.totalCount--;
+
+  updateFilterCounts();
+}
+
+/**
+ * 应用筛选器
+ */
+function setFilter(filter) {
+  const filterTab = Array.from(galleryElements.filterTabs).find(
+    (tab) => tab.dataset.filter === filter
+  );
+  if (filterTab) {
+    handleFilterClick({ currentTarget: filterTab });
+  }
+}
+
+/**
+ * 打开指定图片
+ */
+function openImage(imageId) {
+  const index = getImageIndex(imageId);
+  if (index !== -1) {
+    openModal(index);
+  }
+}
+
+// ===============================
+// 自动初始化
+// ===============================
+
+// 页面加载完成后初始化画廊
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    // 检查是否在画廊页面
+    if (
+      window.location.pathname.includes("gallery.html") ||
+      window.location.pathname.includes("pages/gallery.html")
+    ) {
+      setTimeout(() => {
+        initializeGallery();
+      }, 100);
+    }
+  });
+} else {
+  if (
+    window.location.pathname.includes("gallery.html") ||
+    window.location.pathname.includes("pages/gallery.html")
+  ) {
+    setTimeout(() => {
+      initializeGallery();
+    }, 100);
+  }
+}
+
+// ===============================
+// 导出画廊接口
+// ===============================
+window.gallery = {
+  // 状态
+  state: galleryState,
+  elements: galleryElements,
+
+  // 核心功能
+  initializeGallery,
+  applyFilter,
+  openModal,
+  closeModal,
+
+  // 图片管理
+  addImage,
+  removeImage,
+  loadImage,
+
+  // 导航
+  showPreviousImage,
+  showNextImage,
+
+  // 公共API
+  setFilter,
+  openImage,
+  resetGalleryState,
+
+  // 工具函数
+  getImageIndex,
+  getFilteredImageIndex,
+  preloadAdjacentImages,
+};

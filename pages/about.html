@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>关于我们 - 我们的故事</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/animations.css" />
+  </head>
+  <body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h3>AaAa & AaAa</h3>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="../index.html" class="nav-link">首页</a>
+            </li>
+            <li class="nav-item">
+              <a href="about.html" class="nav-link active">关于我们</a>
+            </li>
+            <li class="nav-item">
+              <a href="gallery.html" class="nav-link">我们走过的路</a>
+            </li>
+            <li class="nav-item">
+              <a href="impression.html" class="nav-link">我眼中的你</a>
+            </li>
+            <li class="nav-item">
+              <a href="message.html" class="nav-link">想对你说</a>
+            </li>
+          </ul>
+        </div>
+        <div class="nav-toggle" id="nav-toggle">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+      <div class="header-content">
+        <h1 class="page-title" id="page-title">关于我们</h1>
+        <p class="page-subtitle" id="page-subtitle">我们的故事从这里开始</p>
+      </div>
+    </header>
+
+    <!-- 时间线主要内容 -->
+    <main class="timeline-container">
+      <div class="timeline" id="timeline">
+        <!-- 时间轴主线 -->
+        <div class="timeline-line"></div>
+        <!-- 时间线内容将通过JavaScript动态生成 -->
+      </div>
+
+      <!-- 装饰元素 -->
+      <div class="timeline-decorations">
+        <div class="floating-heart" style="left: 10%; top: 20%"></div>
+        <div class="floating-heart" style="right: 15%; top: 40%"></div>
+        <div class="floating-heart" style="left: 20%; bottom: 30%"></div>
+        <div class="floating-star" style="right: 10%; top: 60%"></div>
+        <div class="floating-star" style="left: 80%; top: 80%"></div>
+      </div>
+    </main>
+
+    <!-- 页面底部 -->
+    <footer class="page-footer">
+      <div class="footer-content">
+        <p class="footer-text">Design by yukeeii code by jyz</p>
+        <div class="footer-hearts">
+          <span class="heart">💕</span>
+          <span class="heart">💖</span>
+          <span class="heart">💕</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript 文件 -->
+    <script src="../js/timeline-data.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/animations.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+      // 动态生成时间线
+      document.addEventListener("DOMContentLoaded", function () {
+        const timeline = document.getElementById("timeline");
+
+        // 更新页面标题和副标题
+        document.getElementById("page-title").textContent =
+          timelineData.pageTitle;
+        document.getElementById("page-subtitle").textContent =
+          timelineData.pageSubtitle;
+
+        // 生成时间线内容
+        timelineData.timeline.forEach((yearData, yearIndex) => {
+          yearData.events.forEach((event, eventIndex) => {
+            const timelineItem = document.createElement("div");
+            timelineItem.className = `timeline-item ${
+              event.isFuture ? "timeline-future" : ""
+            }`;
+            timelineItem.setAttribute("data-year", yearData.year);
+
+            const markerClass = event.isFuture
+              ? "timeline-marker timeline-marker-future"
+              : "timeline-marker";
+            const cardClass = event.isFuture
+              ? "timeline-card timeline-card-future"
+              : "timeline-card";
+
+            timelineItem.innerHTML = `
+              <div class="${markerClass}"></div>
+              <div class="timeline-content timeline-${event.position}">
+                <div class="timeline-year">${event.date}</div>
+                <div class="${cardClass}">
+                  <h3 class="timeline-title">${event.title}</h3>
+                  <p class="timeline-description">${event.description}</p>
+                  <div class="timeline-highlight">${event.tag}</div>
+                </div>
+              </div>
+            `;
+
+            timeline.appendChild(timelineItem);
+          });
+        });
+
+        // 触发动画
+        setTimeout(() => {
+          const items = document.querySelectorAll(".timeline-item");
+          items.forEach((item, index) => {
+            setTimeout(() => {
+              item.style.opacity = "1";
+              item.style.transform = "translateY(0)";
+            }, index * 200);
+          });
+        }, 500);
+      });
+    </script>
+  </body>
+</html>

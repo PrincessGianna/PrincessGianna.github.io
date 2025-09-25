@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Read(//Users/duskandwine/Downloads/未命名文件夹/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+  "hasCompletedOnboarding": true
+}
