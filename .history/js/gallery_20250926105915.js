@@ -523,8 +523,7 @@ function openModal(imageIndex) {
     const viewportHeight = window.innerHeight;
 
     // 计算模态框相对于页面的位置
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
     const modalTopInPage = currentScroll + modalRect.top;
     const modalHeight = modalRect.height;
 
@@ -590,12 +589,9 @@ function closeModal() {
   document.body.style.overflow = "";
   document.body.style.paddingRight = "";
 
-  // 平滑恢复到原始滚动位置
+  // 恢复滚动位置
   if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo({
-      top: galleryState.scrollPosition,
-      behavior: "smooth",
-    });
+    window.scrollTo(0, galleryState.scrollPosition);
     galleryState.scrollPosition = null;
   }
 }

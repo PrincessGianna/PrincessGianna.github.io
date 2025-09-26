@@ -523,8 +523,7 @@ function openModal(imageIndex) {
     const viewportHeight = window.innerHeight;
 
     // 计算模态框相对于页面的位置
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
     const modalTopInPage = currentScroll + modalRect.top;
     const modalHeight = modalRect.height;
 

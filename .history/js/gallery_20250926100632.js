@@ -33,57 +33,6 @@ const galleryElements = {
 };
 
 // ===============================
-// 日期分类工具函数
-// ===============================
-
-/**
- * 解析日期字符串
- */
-function parsePhotoDate(dateStr) {
-  // 去除日期后的序号，如 "2023.01.02(2)" -> "2023.01.02"
-  const cleaned = dateStr.replace(/\([0-9]+\)$/, "");
-  const parts = cleaned.split(".");
-  if (parts.length === 3) {
-    return new Date(
-      parseInt(parts[0]),
-      parseInt(parts[1]) - 1,
-      parseInt(parts[2])
-    );
-  }
-  return null;
-}
-
-/**
- * 根据日期获取分类
- */
-function getPhotoCategory(dateStr) {
-  const date = parsePhotoDate(dateStr);
-  if (!date) return "unknown";
-
-  // 大二的我们: 2022.11.07 到 2023.08.07
-  const sophomoreStart = new Date(2022, 10, 7); // 月份从0开始
-  const sophomoreEnd = new Date(2023, 7, 7);
-
-  // 大三的我们: 2023.09.21 到 2024.3.26
-  const juniorStart = new Date(2023, 8, 21);
-  const juniorEnd = new Date(2024, 2, 26);
-
-  // 异地的我们: 2024.07.06 到 2025.5.10
-  const longDistanceStart = new Date(2024, 6, 6);
-  const longDistanceEnd = new Date(2025, 4, 10);
-
-  if (date >= sophomoreStart && date <= sophomoreEnd) {
-    return "sophomore";
-  } else if (date >= juniorStart && date <= juniorEnd) {
-    return "junior";
-  } else if (date >= longDistanceStart && date <= longDistanceEnd) {
-    return "longdistance";
-  }
-
-  return "unknown";
-}
-
-// ===============================
 // 画廊初始化
 // ===============================
 
@@ -134,6 +83,7 @@ function cacheGalleryElements() {
   galleryElements.modalPrev = utils.$("#modal-prev");
   galleryElements.modalNext = utils.$("#modal-next");
   galleryElements.loadMoreBtn = utils.$("#load-more-btn");
+  
 }
 
 /**
@@ -201,7 +151,6 @@ function initializeImageData() {
   // 转换为内部数据格式
   galleryState.images = galleryData.map((data, index) => {
     const element = galleryElements.galleryItems[index];
-    const category = getPhotoCategory(data.date);
 
     const imageData = {
       id: data.id,
@@ -209,7 +158,7 @@ function initializeImageData() {
       alt: data.title,
       title: data.title,
       date: data.date,
-      categories: [category], // 使用新的分类系统
+      categories: [], // 不使用类别，只使用年份筛选
       year: data.year,
       element: element,
       loaded: false,
@@ -316,11 +265,19 @@ function applyFilter(filter) {
         image.title,
         "Categories:",
         image.categories,
+        "Year:",
+        image.year,
         "Filter:",
         filter
       );
 
-      // 检查新的分类筛选（sophomore, junior, longdistance）
+      // 检查年份筛选（例如：'2024', '2023'等）
+      if (filter.match(/^\d{4}$/)) {
+        const matches = image.year === filter;
+        console.log("Year filter match:", matches);
+        return matches;
+      }
+      // 检查类别筛选（例如：'travel', 'daily', 'special'）
       const matches = image.categories.includes(filter);
       console.log("Category filter match:", matches);
       return matches;
@@ -429,7 +386,11 @@ function updateFilterCounts() {
         count = galleryState.images.length;
       } else {
         count = galleryState.images.filter((image) => {
-          // 检查新的分类筛选（sophomore, junior, longdistance）
+          // 检查年份筛选（例如：'2024', '2023'等）
+          if (filter.match(/^\d{4}$/)) {
+            return image.year === filter;
+          }
+          // 检查类别筛选（例如：'travel', 'daily', 'special'）
           return image.categories.includes(filter);
         }).length;
       }
@@ -514,30 +475,42 @@ function openModal(imageIndex) {
   document.body.style.overflow = "hidden";
   document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
 
-  // 智能滚动：确保模态框在最佳观看位置
+  // 智能居中：确保模态框在最佳观看位置
   setTimeout(() => {
     const modalContent = galleryElements.modal.querySelector(".modal-content");
     const modalRect = modalContent
       ? modalContent.getBoundingClientRect()
       : galleryElements.modal.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-    // 计算模态框相对于页面的位置
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
-    const modalTopInPage = currentScroll + modalRect.top;
+    // 检查模态框内容是否在视窗的最佳位置
+    const modalTop = modalRect.top;
+    const modalBottom = modalRect.bottom;
     const modalHeight = modalRect.height;
 
-    // 计算理想的滚动位置：让模态框在视窗中垂直居中
-    const targetScroll = modalTopInPage - (viewportHeight - modalHeight) / 2;
+    // 如果模态框内容不在视窗的理想位置，平滑滚动调整
+    if (
+      modalTop < 50 ||
+      modalBottom > viewportHeight - 50 ||
+      modalHeight > viewportHeight
+    ) {
+      const currentScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+      let targetScroll;
 
-    // 确保不会滚动到负值
-    const finalTargetScroll = Math.max(0, targetScroll);
+      if (modalHeight > viewportHeight - 100) {
+        // 如果模态框很高，滚动到顶部，留一点margin
+        targetScroll = currentScroll + modalTop - 50;
+      } else {
+        // 否则居中显示
+        const modalCenter = currentScroll + modalTop + modalHeight / 2;
+        targetScroll = modalCenter - viewportHeight / 2;
+      }
 
-    // 平滑滚动到目标位置
-    if (Math.abs(currentScroll - finalTargetScroll) > 50) {
+      // 平滑滚动到目标位置
       window.scrollTo({
-        top: finalTargetScroll,
+        top: Math.max(0, targetScroll),
         behavior: "smooth",
       });
     }
@@ -590,12 +563,9 @@ function closeModal() {
   document.body.style.overflow = "";
   document.body.style.paddingRight = "";
 
-  // 平滑恢复到原始滚动位置
+  // 恢复滚动位置
   if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo({
-      top: galleryState.scrollPosition,
-      behavior: "smooth",
-    });
+    window.scrollTo(0, galleryState.scrollPosition);
     galleryState.scrollPosition = null;
   }
 }
@@ -640,8 +610,8 @@ function loadModalImage() {
  */
 function updateModalContent(image) {
   if (galleryElements.modalImage) {
-    galleryElements.modalImage.src = image.src; // 使用正确的属性名：image.src
-    galleryElements.modalImage.alt = image.title;
+    galleryElements.modalImage.src = image.src;
+    galleryElements.modalImage.alt = image.alt;
   }
 
   if (galleryElements.modalTitle) {
@@ -928,7 +898,8 @@ function addImageToGallery(imageData) {
   // 如果符合当前筛选条件，添加到筛选列表
   if (
     galleryState.currentFilter === "all" ||
-    imageData.categories.includes(galleryState.currentFilter)
+    imageData.categories.includes(galleryState.currentFilter) ||
+    imageData.year === galleryState.currentFilter
   ) {
     galleryState.filteredImages.push(imageData);
   }

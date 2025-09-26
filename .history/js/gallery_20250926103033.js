@@ -514,30 +514,42 @@ function openModal(imageIndex) {
   document.body.style.overflow = "hidden";
   document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
 
-  // 智能滚动：确保模态框在最佳观看位置
+  // 智能居中：确保模态框在最佳观看位置
   setTimeout(() => {
     const modalContent = galleryElements.modal.querySelector(".modal-content");
     const modalRect = modalContent
       ? modalContent.getBoundingClientRect()
       : galleryElements.modal.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-    // 计算模态框相对于页面的位置
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
-    const modalTopInPage = currentScroll + modalRect.top;
+    // 检查模态框内容是否在视窗的最佳位置
+    const modalTop = modalRect.top;
+    const modalBottom = modalRect.bottom;
     const modalHeight = modalRect.height;
 
-    // 计算理想的滚动位置：让模态框在视窗中垂直居中
-    const targetScroll = modalTopInPage - (viewportHeight - modalHeight) / 2;
+    // 如果模态框内容不在视窗的理想位置，平滑滚动调整
+    if (
+      modalTop < 50 ||
+      modalBottom > viewportHeight - 50 ||
+      modalHeight > viewportHeight
+    ) {
+      const currentScroll =
+        window.pageYOffset || document.documentElement.scrollTop;
+      let targetScroll;
 
-    // 确保不会滚动到负值
-    const finalTargetScroll = Math.max(0, targetScroll);
+      if (modalHeight > viewportHeight - 100) {
+        // 如果模态框很高，滚动到顶部，留一点margin
+        targetScroll = currentScroll + modalTop - 50;
+      } else {
+        // 否则居中显示
+        const modalCenter = currentScroll + modalTop + modalHeight / 2;
+        targetScroll = modalCenter - viewportHeight / 2;
+      }
 
-    // 平滑滚动到目标位置
-    if (Math.abs(currentScroll - finalTargetScroll) > 50) {
+      // 平滑滚动到目标位置
       window.scrollTo({
-        top: finalTargetScroll,
+        top: Math.max(0, targetScroll),
         behavior: "smooth",
       });
     }
@@ -590,12 +602,9 @@ function closeModal() {
   document.body.style.overflow = "";
   document.body.style.paddingRight = "";
 
-  // 平滑恢复到原始滚动位置
+  // 恢复滚动位置
   if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo({
-      top: galleryState.scrollPosition,
-      behavior: "smooth",
-    });
+    window.scrollTo(0, galleryState.scrollPosition);
     galleryState.scrollPosition = null;
   }
 }

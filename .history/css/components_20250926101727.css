@@ -1282,11 +1282,13 @@
    模态框组件
    =============================== */
 .modal {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  width: 100vw; /* 确保视窗宽度 */
+  height: 100vh; /* 确保视窗高度 */
   z-index: var(--z-modal);
   display: flex;
   align-items: center;
@@ -1437,8 +1439,8 @@
 
 /* 照片模态框特殊样式 */
 #photo-modal .modal-content {
-  max-width: 90vw;
-  max-height: 85vh;
+  max-width: 95vw;
+  max-height: 95vh;
   background: linear-gradient(
     145deg,
     rgba(255, 255, 255, 0.95),
@@ -1450,7 +1452,7 @@
   border: 2px solid rgba(255, 182, 193, 0.2);
   box-shadow: 0 25px 80px rgba(255, 182, 193, 0.4),
     0 10px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1487,15 +1489,15 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-height: 50vh;
-  margin-bottom: var(--spacing-md);
+  max-height: 60vh;
+  margin-bottom: var(--spacing-lg);
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
   flex-shrink: 0;
 }
 
 .modal-image {
-  max-width: 70vw;
-  max-height: 50vh;
+  max-width: 75vw;
+  max-height: 60vh;
   border-radius: var(--radius-large);
   box-shadow: 0 25px 80px rgba(255, 182, 193, 0.4),
     0 15px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -1566,9 +1568,9 @@
     rgba(255, 255, 255, 0.95),
     rgba(248, 249, 250, 0.9)
   );
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   border-radius: var(--radius-large);
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
   text-align: center;
   box-shadow: 0 10px 30px rgba(255, 182, 193, 0.2),
     0 5px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -1582,9 +1584,9 @@
 }
 
 .modal-info .modal-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   color: var(--text-dark);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
   font-weight: var(--font-weight-semibold);
   background: linear-gradient(
     135deg,
@@ -1599,10 +1601,10 @@
 
 .modal-date {
   color: var(--primary-pink);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: var(--font-weight-medium);
-  margin-bottom: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-xs) var(--spacing-md);
   background: linear-gradient(
     135deg,
     rgba(255, 182, 193, 0.1),
@@ -1615,16 +1617,16 @@
 
 .modal-description {
   color: var(--text-dark);
-  line-height: 1.6;
-  margin: var(--spacing-sm) 0 0 0;
-  font-size: 1rem;
-  max-width: 500px;
+  line-height: 1.7;
+  margin: var(--spacing-md) 0 0 0;
+  font-size: 1.1rem;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   opacity: 1;
   font-weight: var(--font-weight-medium);
   background: rgba(255, 182, 193, 0.08);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   border-radius: var(--radius-medium);
   border-left: 3px solid var(--primary-pink);
   font-style: italic;
@@ -1673,19 +1675,8 @@
 @media (max-width: 768px) {
   #photo-modal .modal-content {
     max-width: 95vw;
-    max-height: 88vh;
-    padding: var(--spacing-md);
-    justify-content: flex-start;
-  }
-
-  .modal-image-container {
-    max-height: 45vh;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .modal-image {
-    max-height: 45vh;
-    max-width: 90vw;
+    max-height: 90vh;
+    padding: var(--spacing-lg);
   }
 
   .modal-close {
@@ -2060,8 +2051,8 @@
   }
 
   .modal-info {
-    padding: var(--spacing-md);
-    margin-top: var(--spacing-xs);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
   }
 
   .modal-info .modal-title {

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Modal</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-info { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .test-modal { display: block; position: relative; background: white; border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        .modal-info p { margin: 10px 0; }
+        #modal-description { background: yellow; padding: 10px; border: 2px solid red; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Debug Gallery Modal Description</h1>
+    
+    <div class="debug-info">
+        <h3>测试数据:</h3>
+        <div id="test-data-display"></div>
+    </div>
+
+    <div class="debug-info">
+        <h3>模拟Modal:</h3>
+        <div class="test-modal">
+            <div class="modal-info">
+                <h3 class="modal-title" id="modal-title">标题会显示在这里</h3>
+                <p class="modal-date" id="modal-date">日期会显示在这里</p>
+                <p class="modal-description" id="modal-description">描述内容会显示在这里</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="debug-info">
+        <h3>测试控制:</h3>
+        <button onclick="testWithFirstImage()">测试第一张图片数据</button>
+        <button onclick="testManualData()">测试手动数据</button>
+        <button onclick="checkElements()">检查元素</button>
+    </div>
+
+    <div class="debug-info">
+        <h3>调试输出:</h3>
+        <div id="debug-output"></div>
+    </div>
+
+    <script src="../js/gallery_data.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('debug-output');
+            output.innerHTML += '<p>' + message + '</p>';
+            console.log(message);
+        }
+
+        function testWithFirstImage() {
+            log('=== 测试第一张图片数据 ===');
+            
+            if (typeof galleryData === 'undefined') {
+                log('❌ galleryData 未定义');
+                return;
+            }
+            
+            log('✅ galleryData 已加载，包含 ' + galleryData.length + ' 张图片');
+            
+            const firstImage = galleryData[0];
+            log('第一张图片数据: ' + JSON.stringify(firstImage, null, 2));
+            
+            updateModalContent(firstImage);
+        }
+
+        function testManualData() {
+            log('=== 测试手动数据 ===');
+            
+            const testData = {
+                title: "测试标题",
+                date: "2023.01.01",
+                description: "这是一个测试描述，用来验证description是否能正确显示。"
+            };
+            
+            log('测试数据: ' + JSON.stringify(testData, null, 2));
+            updateModalContent(testData);
+        }
+
+        function updateModalContent(image) {
+            log('--- updateModalContent 开始 ---');
+            
+            const modalTitle = document.getElementById('modal-title');
+            const modalDate = document.getElementById('modal-date');
+            const modalDescription = document.getElementById('modal-description');
+            
+            log('modal-title 元素: ' + (modalTitle ? '✅ 找到' : '❌ 未找到'));
+            log('modal-date 元素: ' + (modalDate ? '✅ 找到' : '❌ 未找到'));
+            log('modal-description 元素: ' + (modalDescription ? '✅ 找到' : '❌ 未找到'));
+            
+            if (modalTitle) {
+                modalTitle.textContent = image.title;
+                log('✅ 标题已更新: ' + image.title);
+            }
+            
+            if (modalDate) {
+                modalDate.textContent = image.date;
+                log('✅ 日期已更新: ' + image.date);
+            }
+            
+            if (modalDescription) {
+                modalDescription.textContent = image.description;
+                log('✅ 描述已更新: ' + image.description);
+                log('描述元素内容: ' + modalDescription.textContent);
+                log('描述元素innerHTML: ' + modalDescription.innerHTML);
+            }
+            
+            log('--- updateModalContent 结束 ---');
+        }
+
+        function checkElements() {
+            log('=== 检查页面元素 ===');
+            
+            const modalTitle = document.getElementById('modal-title');
+            const modalDate = document.getElementById('modal-date');
+            const modalDescription = document.getElementById('modal-description');
+            
+            log('modal-title: ' + (modalTitle ? modalTitle.tagName + ' - ' + modalTitle.textContent : '未找到'));
+            log('modal-date: ' + (modalDate ? modalDate.tagName + ' - ' + modalDate.textContent : '未找到'));
+            log('modal-description: ' + (modalDescription ? modalDescription.tagName + ' - ' + modalDescription.textContent : '未找到'));
+            
+            if (modalDescription) {
+                const styles = window.getComputedStyle(modalDescription);
+                log('Description CSS display: ' + styles.display);
+                log('Description CSS visibility: ' + styles.visibility);
+                log('Description CSS opacity: ' + styles.opacity);
+                log('Description CSS height: ' + styles.height);
+            }
+        }
+
+        // 页面加载时显示数据
+        window.onload = function() {
+            if (typeof galleryData !== 'undefined') {
+                document.getElementById('test-data-display').innerHTML = 
+                    '<p>Gallery数据已加载，共 ' + galleryData.length + ' 张图片</p>' +
+                    '<p>第一张图片: ' + JSON.stringify(galleryData[0], null, 2) + '</p>';
+            } else {
+                document.getElementById('test-data-display').innerHTML = '<p style="color: red;">❌ Gallery数据未加载</p>';
+            }
+        };
+    </script>
+</body>
+</html>

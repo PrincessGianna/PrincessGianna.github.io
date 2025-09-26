@@ -1282,11 +1282,13 @@
    模态框组件
    =============================== */
 .modal {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  width: 100vw; /* 确保视窗宽度 */
+  height: 100vh; /* 确保视窗高度 */
   z-index: var(--z-modal);
   display: flex;
   align-items: center;

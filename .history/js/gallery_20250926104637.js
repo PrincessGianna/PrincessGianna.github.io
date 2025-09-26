@@ -514,34 +514,7 @@ function openModal(imageIndex) {
   document.body.style.overflow = "hidden";
   document.body.style.paddingRight = "17px"; // 补偿滚动条宽度，防止页面跳动
 
-  // 智能滚动：确保模态框在最佳观看位置
-  setTimeout(() => {
-    const modalContent = galleryElements.modal.querySelector(".modal-content");
-    const modalRect = modalContent
-      ? modalContent.getBoundingClientRect()
-      : galleryElements.modal.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-
-    // 计算模态框相对于页面的位置
-    const currentScroll =
-      window.pageYOffset || document.documentElement.scrollTop;
-    const modalTopInPage = currentScroll + modalRect.top;
-    const modalHeight = modalRect.height;
-
-    // 计算理想的滚动位置：让模态框在视窗中垂直居中
-    const targetScroll = modalTopInPage - (viewportHeight - modalHeight) / 2;
-
-    // 确保不会滚动到负值
-    const finalTargetScroll = Math.max(0, targetScroll);
-
-    // 平滑滚动到目标位置
-    if (Math.abs(currentScroll - finalTargetScroll) > 50) {
-      window.scrollTo({
-        top: finalTargetScroll,
-        behavior: "smooth",
-      });
-    }
-  }, 150); // 稍微延迟以确保模态框完全渲染
+  // 不进行自动滚动，让模态框保持在页面当前位置居中显示
 
   // 添加模态框打开动画
   if (window.animations) {
@@ -590,12 +563,9 @@ function closeModal() {
   document.body.style.overflow = "";
   document.body.style.paddingRight = "";
 
-  // 平滑恢复到原始滚动位置
+  // 恢复滚动位置
   if (typeof galleryState.scrollPosition === "number") {
-    window.scrollTo({
-      top: galleryState.scrollPosition,
-      behavior: "smooth",
-    });
+    window.scrollTo(0, galleryState.scrollPosition);
     galleryState.scrollPosition = null;
   }
 }

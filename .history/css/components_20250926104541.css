@@ -1282,11 +1282,13 @@
    模态框组件
    =============================== */
 .modal {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  width: 100vw; /* 确保视窗宽度 */
+  height: 100vh; /* 确保视窗高度 */
   z-index: var(--z-modal);
   display: flex;
   align-items: center;
@@ -1673,19 +1675,17 @@
 @media (max-width: 768px) {
   #photo-modal .modal-content {
     max-width: 95vw;
-    max-height: 88vh;
-    padding: var(--spacing-md);
+    max-height: 95vh;
+    padding: var(--spacing-lg);
     justify-content: flex-start;
   }
 
   .modal-image-container {
-    max-height: 45vh;
-    margin-bottom: var(--spacing-sm);
+    max-height: 50vh;
   }
 
   .modal-image {
-    max-height: 45vh;
-    max-width: 90vw;
+    max-height: 50vh;
   }
 
   .modal-close {
@@ -2060,8 +2060,8 @@
   }
 
   .modal-info {
-    padding: var(--spacing-md);
-    margin-top: var(--spacing-xs);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
   }
 
   .modal-info .modal-title {

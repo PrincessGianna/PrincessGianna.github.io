@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Debug</title>
+</head>
+<body>
+    <h1>Gallery Description Debug</h1>
+    <div id="debug-info"></div>
+    
+    <script>
+        // 简单检查元素是否存在
+        function debugGallery() {
+            const debugDiv = document.getElementById('debug-info');
+            
+            // 加载gallery页面的HTML
+            fetch('./pages/gallery.html')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const modalDescription = doc.getElementById('modal-description');
+                    debugDiv.innerHTML = `
+                        <h2>HTML检查结果：</h2>
+                        <p>modal-description元素存在: ${modalDescription ? '✅是' : '❌否'}</p>
+                        ${modalDescription ? `<p>元素内容: "${modalDescription.textContent}"</p>` : ''}
+                        ${modalDescription ? `<p>元素类名: "${modalDescription.className}"</p>` : ''}
+                        
+                        <h2>数据检查：</h2>
+                        <div id="data-check">加载数据中...</div>
+                    `;
+                    
+                    // 检查gallery数据
+                    const script = document.createElement('script');
+                    script.src = './js/gallery_data.js';
+                    script.onload = () => {
+                        const dataDiv = document.getElementById('data-check');
+                        if (typeof galleryData !== 'undefined') {
+                            const firstImage = galleryData[0];
+                            dataDiv.innerHTML = `
+                                <p>Gallery数据加载: ✅成功</p>
+                                <p>数据数量: ${galleryData.length}张图片</p>
+                                <p>第一张图片标题: "${firstImage.title}"</p>
+                                <p>第一张图片描述: "${firstImage.description}"</p>
+                                <p>描述长度: ${firstImage.description ? firstImage.description.length : 0}字符</p>
+                            `;
+                        } else {
+                            dataDiv.innerHTML = '<p>Gallery数据加载: ❌失败</p>';
+                        }
+                    };
+                    document.head.appendChild(script);
+                })
+                .catch(err => {
+                    debugDiv.innerHTML = `<p>错误: ${err.message}</p>`;
+                });
+        }
+        
+        // 页面加载后执行调试
+        window.addEventListener('load', debugGallery);
+    </script>
+</body>
+</html>
