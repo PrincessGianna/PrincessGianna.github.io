@@ -1,0 +1,951 @@
+/* ===============================
+   高级动画效果库
+   =============================== */
+
+/* 页面加载动画序列 */
+.page-enter {
+  animation: pageEnter 0.8s ease-out forwards;
+}
+
+.page-exit {
+  animation: pageExit 0.4s ease-in forwards;
+}
+
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+
+/* 文字逐行显示动画 */
+.text-reveal {
+  overflow: hidden;
+}
+
+.text-reveal .line {
+  display: block;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: textReveal 0.8s ease-out forwards;
+}
+
+@keyframes textReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 按钮弹入动画 */
+.button-bounce-in {
+  animation: buttonBounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes buttonBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(30px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ===============================
+   滚动触发动画
+   =============================== */
+
+/* 淡入上移动画 */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fade-in-up.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 淡入下移动画 */
+.fade-in-down {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fade-in-down.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 左右交替进入动画 */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-80px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-in-left.animate {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(80px);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-in-right.animate {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* 缩放进入动画 */
+.scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scale-in.animate {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 旋转进入动画 */
+.rotate-in {
+  opacity: 0;
+  transform: rotate(-15deg) scale(0.9);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.rotate-in.animate {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* ===============================
+   交互动画效果
+   =============================== */
+
+/* 悬浮效果 */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4);
+}
+
+/* 悬浮倾斜效果 */
+.hover-tilt {
+  transition: all 0.3s ease;
+}
+
+.hover-tilt:hover {
+  transform: rotate(2deg) scale(1.02);
+}
+
+/* 悬浮发光效果 */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px rgba(255, 182, 193, 0.6);
+  filter: brightness(1.1);
+}
+
+/* 点击波纹效果 */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple-effect:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* 弹性点击效果 */
+.elastic-click {
+  transition: transform 0.1s ease;
+}
+
+.elastic-click:active {
+  transform: scale(0.95);
+}
+
+/* ===============================
+   数字计数动画
+   =============================== */
+.counter {
+  font-variant-numeric: tabular-nums;
+}
+
+.counter.counting {
+  animation: counterGlow 2s ease-out;
+}
+
+@keyframes counterGlow {
+  0% {
+    text-shadow: 0 0 10px var(--primary-pink);
+  }
+  50% {
+    text-shadow: 0 0 20px var(--primary-pink), 0 0 30px var(--primary-pink);
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+
+/* ===============================
+   背景装饰动画
+   =============================== */
+
+/* 粒子飘落动画 */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--primary-pink);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: particleFall linear infinite;
+}
+
+.particle.heart {
+  width: 8px;
+  height: 8px;
+  background: var(--primary-pink);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transform: rotate(-45deg);
+}
+
+.particle.star {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-yellow-bright);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+@keyframes particleFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 几何图案动画 */
+.geometric-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+.geometric-shape {
+  position: absolute;
+  border: 2px solid var(--primary-pink);
+  animation: geometricFloat 20s linear infinite;
+}
+
+.geometric-shape.circle {
+  border-radius: 50%;
+}
+
+.geometric-shape.triangle {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 35px solid var(--primary-pink);
+  border-top: none;
+}
+
+.geometric-shape.square {
+  transform: rotate(45deg);
+}
+
+@keyframes geometricFloat {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+  }
+}
+
+/* ===============================
+   页面切换动画
+   =============================== */
+
+/* 淡入淡出切换 */
+.page-transition-fade-enter {
+  opacity: 0;
+  animation: fadeEnter 0.5s ease-out forwards;
+}
+
+.page-transition-fade-exit {
+  opacity: 1;
+  animation: fadeExit 0.3s ease-in forwards;
+}
+
+@keyframes fadeEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeExit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* 滑动切换 */
+.page-transition-slide-enter {
+  transform: translateX(100%);
+  animation: slideEnter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.page-transition-slide-exit {
+  transform: translateX(0);
+  animation: slideExit 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes slideEnter {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideExit {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* ===============================
+   特殊动画效果
+   =============================== */
+
+/* 时间轴绘制动画 */
+.timeline-draw {
+  opacity: 0;
+  animation: timelineDraw 2s ease-out forwards;
+}
+
+@keyframes timelineDraw {
+  0% {
+    opacity: 0;
+    height: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    height: 100%;
+  }
+}
+
+/* 照片懒加载动画 */
+.image-lazy-load {
+  opacity: 0;
+  filter: blur(5px);
+  transition: all 0.8s ease;
+}
+
+.image-lazy-load.loaded {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* 模态框动画 */
+.modal-enter {
+  animation: modalEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.modal-exit {
+  animation: modalExit 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+
+@keyframes modalEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(-80px) rotateX(10deg);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translateY(-10px) rotateX(2deg);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes modalExit {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotateX(0deg);
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.95) translateY(20px) rotateX(-5deg);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6) translateY(-100px) rotateX(-15deg);
+    filter: blur(15px);
+  }
+}
+
+/* 模态框图片入场动画 */
+@keyframes modalImageEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: scale(1.02) translateY(-5px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* 模态框信息入场动画 */
+@keyframes modalInfoEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-image-enter {
+  animation: modalImageEnter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.modal-info-enter {
+  animation: modalInfoEnter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
+}
+
+/* ===============================
+   标签云动画
+   =============================== */
+
+/* 标签随机飞入动画 */
+.tag-fly-in {
+  animation: tagFlyIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes tagFlyIn {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+  }
+  70% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* 标签悬浮跳动动画 */
+.tag-float {
+  animation: tagFloat 3s ease-in-out infinite;
+}
+
+@keyframes tagFloat {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+/* 画笔遮罩绘制动画 */
+.brush-reveal {
+  position: relative;
+  overflow: hidden;
+}
+
+.brush-reveal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--accent-yellow-bright);
+  transform: skewX(-20deg);
+  animation: brushReveal 1.5s ease-out forwards;
+}
+
+@keyframes brushReveal {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 0;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* ===============================
+   音乐播放器动画
+   =============================== */
+
+/* CD旋转动画 */
+.cd-spinning {
+  animation: spin 4s linear infinite;
+}
+
+.cd-spinning.paused {
+  animation-play-state: paused;
+}
+
+/* 音乐波形动画 */
+.music-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.wave-bar {
+  width: 3px;
+  background: var(--primary-pink);
+  border-radius: 2px;
+  animation: musicWave 0.8s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(1) {
+  height: 10px;
+  animation-delay: 0s;
+}
+.wave-bar:nth-child(2) {
+  height: 15px;
+  animation-delay: 0.1s;
+}
+.wave-bar:nth-child(3) {
+  height: 20px;
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(4) {
+  height: 15px;
+  animation-delay: 0.3s;
+}
+.wave-bar:nth-child(5) {
+  height: 25px;
+  animation-delay: 0.4s;
+}
+
+@keyframes musicWave {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.3);
+  }
+}
+
+/* ===============================
+   加载动画变体
+   =============================== */
+
+/* 心形跳动加载 */
+.heart-loading {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.heart-loading::before,
+.heart-loading::after {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 48px;
+  background: var(--primary-pink);
+  border-radius: 30px 30px 0 0;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+  animation: heartLoadingBeat 1.2s ease-in-out infinite;
+}
+
+.heart-loading::after {
+  left: 16px;
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+  animation-delay: 0.1s;
+}
+
+@keyframes heartLoadingBeat {
+  0%,
+  100% {
+    transform: scale(1) rotate(-45deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(-45deg);
+  }
+}
+
+/* 点阵加载动画 */
+.dots-loading {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: var(--primary-pink);
+  border-radius: 50%;
+  animation: dotsLoading 1.5s ease-in-out infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotsLoading {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* ===============================
+   高级交互动画
+   =============================== */
+
+/* 磁性悬浮效果 */
+.magnetic-hover {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.magnetic-hover:hover {
+  transform: scale(1.05);
+}
+
+/* 3D翻转卡片 */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--radius-medium);
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* 视差滚动效果 */
+.parallax {
+  transform: translateZ(0);
+  transition: transform 0.1s ease-out;
+}
+
+/* 弹性悬浮动画 */
+.elastic-bounce {
+  animation: elasticBounce 2s ease-in-out infinite;
+}
+
+@keyframes elasticBounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ===============================
+   响应式动画调整
+   =============================== */
+@media (max-width: 768px) {
+  /* 减少移动端动画强度 */
+  .fade-in-up,
+  .fade-in-down,
+  .slide-in-left,
+  .slide-in-right {
+    transform: translateY(30px);
+  }
+
+  .fade-in-up.animate,
+  .fade-in-down.animate {
+    transform: translateY(0);
+  }
+
+  .slide-in-left.animate,
+  .slide-in-right.animate {
+    transform: translateX(0);
+  }
+
+  /* 简化复杂动画 */
+  .tag-fly-in {
+    animation: simpleFadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes simpleFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  /* 进一步简化动画 */
+  .particles,
+  .geometric-shapes {
+    display: none;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-3px);
+  }
+
+  .tag-float {
+    animation: none;
+  }
+}
+
+/* ===============================
+   性能优化
+   =============================== */
+
+/* 使用 transform 和 opacity 优化动画性能 */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 减少重绘的动画 */
+.efficient-animation {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ===============================
+   按钮箭头指引动画
+   =============================== */
+
+/* 按钮内箭头跳动动画 */
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+/* 引导箭头显示动画 */
+@keyframes guideArrowsShow {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* 引导箭头浮动动画 */
+@keyframes guideArrowFloat {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(8px);
+  }
+}
+
+/* ===============================
+   可访问性支持
+   =============================== */
+
+/* 用户偏好：减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .particles,
+  .geometric-shapes,
+  .tag-float,
+  .elastic-bounce,
+  .music-wave {
+    animation: none !important;
+  }
+
+  .parallax {
+    transform: none !important;
+  }
+}

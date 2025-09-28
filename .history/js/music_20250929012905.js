@@ -11,9 +11,6 @@ class MusicManager {
   init() {
     console.log("MusicManager: 开始初始化...");
 
-    // 清理任何可能存在的旧的音乐控制按钮
-    this.cleanupOldMusicControls();
-
     // 检查是否已经有音频实例在localStorage中
     const savedTime = localStorage.getItem("musicCurrentTime");
     const savedVolume = localStorage.getItem("musicVolume");
@@ -34,9 +31,20 @@ class MusicManager {
 
     this.createAudioElement();
 
-    // 只有当之前在播放时才恢复播放状态
+    // 确保控制按钮显示
+    setTimeout(() => {
+      this.addPlayPrompt();
+    }, 50);
+
+    // 如果之前在播放，尝试继续播放
     if (isPlaying) {
       console.log("MusicManager: 恢复播放状态...");
+      setTimeout(() => {
+        this.play();
+      }, 100); // 稍微延迟确保音频元素就绪
+    } else {
+      console.log("MusicManager: 音乐未处于播放状态，尝试自动播放...");
+      // 尝试自动播放
       setTimeout(() => {
         this.play();
       }, 100);
@@ -60,31 +68,9 @@ class MusicManager {
         if (shouldPlay && this.audio && this.audio.paused) {
           this.play();
         }
+        // 确保按钮显示
+        this.addPlayPrompt();
       }
-    });
-  }
-
-  // 清理旧的音乐控制按钮和相关样式
-  cleanupOldMusicControls() {
-    // 删除任何可能存在的音乐控制按钮
-    const oldButtons = document.querySelectorAll('#music-control-btn, .music-control-btn, [id*="music-btn"], [class*="music-btn"]');
-    oldButtons.forEach(btn => {
-      console.log("MusicManager: 移除旧的音乐控制按钮", btn);
-      btn.remove();
-    });
-
-    // 删除相关的动画样式
-    const oldStyles = document.querySelectorAll('#music-btn-animations, [id*="music-btn"], style[id*="music"]');
-    oldStyles.forEach(style => {
-      console.log("MusicManager: 移除旧的音乐按钮样式", style);
-      style.remove();
-    });
-
-    // 删除可能存在的音乐播放器容器
-    const oldPlayers = document.querySelectorAll('.music-player, #music-player');
-    oldPlayers.forEach(player => {
-      console.log("MusicManager: 移除旧的音乐播放器容器", player);
-      player.remove();
     });
   }
 
@@ -176,8 +162,11 @@ class MusicManager {
       this.isPlaying = true;
       localStorage.setItem("musicIsPlaying", "true");
       console.log("MusicManager: 音频播放成功");
+      this.updateMusicControlBtn();
     } catch (error) {
       console.log("MusicManager: 音频自动播放被阻止，用户需要手动启动:", error);
+      // 如果自动播放被阻止，可以添加一个用户交互提示
+      this.addPlayPrompt();
     }
   }
 
@@ -187,6 +176,7 @@ class MusicManager {
       this.isPlaying = false;
       localStorage.setItem("musicIsPlaying", "false");
       console.log("MusicManager: 音频已暂停");
+      this.updateMusicControlBtn();
     }
   }
 
@@ -214,12 +204,40 @@ class MusicManager {
     }
   }
 
-  // 为首页按钮添加启动音乐的方法
-  async startMusicFromButton() {
-    console.log("MusicManager: 从按钮启动音乐...");
+  addPlayPrompt() {
+    // 音乐播放控制按钮已移除，不再创建浮动控制按钮
+    // 音乐将通过首页的"开始我们的故事"按钮来控制启动
+  }
 
-    if (!this.isPlaying) {
-      await this.play();
+  // 确保浮动按钮始终在最顶层 - 已移除
+  ensureButtonOnTop() {
+    // 方法已移除，因为不再需要浮动控制按钮
+  }
+
+  updateMusicControlBtn(btn = null) {
+    const musicControlBtn = btn || document.getElementById("music-control-btn");
+    if (!musicControlBtn) return;
+
+    if (this.isPlaying) {
+      // 暂停图标
+      musicControlBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+        </svg>
+      `;
+      musicControlBtn.style.background =
+        "linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff9a9e 100%)";
+      musicControlBtn.classList.add("music-btn-playing");
+    } else {
+      // 播放图标
+      musicControlBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      `;
+      musicControlBtn.style.background =
+        "linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)";
+      musicControlBtn.classList.remove("music-btn-playing");
     }
   }
 
@@ -229,6 +247,7 @@ class MusicManager {
     } else {
       await this.play();
     }
+    this.updateMusicControlBtn();
   }
 }
 
@@ -238,9 +257,6 @@ let globalMusicManager = null;
 // 初始化音乐管理器
 function initMusicManager() {
   console.log("initMusicManager: 开始初始化...");
-
-  // 首先清理任何可能存在的旧按钮
-  cleanupAllMusicControls();
 
   // 检查是否已经有全局实例
   if (window.globalMusicManager) {
@@ -255,6 +271,12 @@ function initMusicManager() {
       );
     }
 
+    // 确保按钮状态正确（页面切换后可能需要重新创建按钮）
+    setTimeout(() => {
+      globalMusicManager.addPlayPrompt();
+      globalMusicManager.updateMusicControlBtn();
+    }, 50);
+
     return;
   }
 
@@ -267,55 +289,12 @@ function initMusicManager() {
   }
 }
 
-// 全局清理函数，确保清理所有可能的音乐控制元素
-function cleanupAllMusicControls() {
-  // 删除任何可能存在的音乐控制按钮
-  const selectors = [
-    '#music-control-btn',
-    '.music-control-btn',
-    '[id*="music-btn"]',
-    '[class*="music-btn"]',
-    '.music-player',
-    '#music-player',
-    '.player-container',
-    '.control-btn'
-  ];
-
-  selectors.forEach(selector => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(element => {
-      console.log("全局清理: 移除音乐控制元素", element);
-      element.remove();
-    });
-  });
-
-  // 删除相关的动画样式
-  const styleSelectors = [
-    '#music-btn-animations',
-    '[id*="music-btn"]',
-    'style[id*="music"]'
-  ];
-
-  styleSelectors.forEach(selector => {
-    const styles = document.querySelectorAll(selector);
-    styles.forEach(style => {
-      console.log("全局清理: 移除音乐相关样式", style);
-      style.remove();
-    });
-  });
-}
-
 // 页面加载完成后初始化
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initMusicManager);
 } else {
   initMusicManager();
 }
-
-// 定期清理任何可能出现的音乐控制按钮
-setInterval(() => {
-  cleanupAllMusicControls();
-}, 3000); // 每3秒清理一次
 
 // 导出管理器供其他脚本使用
 window.MusicManager = MusicManager;

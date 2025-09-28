@@ -41,8 +41,8 @@ function initializeApp() {
   // 初始化导航
   initializeNavigation();
 
-  // 音乐播放器已替换为全局音乐管理器
-  // initializeMusicPlayer();
+  // 初始化音乐播放器
+  initializeMusicPlayer();
 
   // 初始化页面特定功能
   initializePageFeatures();
@@ -489,19 +489,11 @@ function handleHeroButtonClick() {
     utils.removeClass(elements.heroButton, "clicked");
   }, 300);
 
-  // 启动背景音乐
-  if (window.globalMusicManager) {
-    window.globalMusicManager.startMusicFromButton();
-    console.log("首页按钮点击：启动背景音乐");
-  }
-
   // 滚动到下一部分或跳转到关于页面
-  setTimeout(() => {
-    const aboutLink = utils.$('a[href*="about.html"]');
-    if (aboutLink) {
-      window.location.href = aboutLink.href;
-    }
-  }, 800); // 给音乐一点启动时间
+  const aboutLink = utils.$('a[href*="about.html"]');
+  if (aboutLink) {
+    window.location.href = aboutLink.href;
+  }
 }
 
 /**

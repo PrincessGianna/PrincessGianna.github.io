@@ -489,19 +489,25 @@ function handleHeroButtonClick() {
     utils.removeClass(elements.heroButton, "clicked");
   }, 300);
 
-  // 启动背景音乐
+  // 启动背景音乐播放
   if (window.globalMusicManager) {
-    window.globalMusicManager.startMusicFromButton();
-    console.log("首页按钮点击：启动背景音乐");
+    window.globalMusicManager
+      .play()
+      .then(() => {
+        console.log("音乐开始播放");
+      })
+      .catch((error) => {
+        console.log("音乐播放失败:", error);
+      });
   }
 
-  // 滚动到下一部分或跳转到关于页面
+  // 延迟跳转到关于页面，让用户感受到音乐开始播放
   setTimeout(() => {
     const aboutLink = utils.$('a[href*="about.html"]');
     if (aboutLink) {
       window.location.href = aboutLink.href;
     }
-  }, 800); // 给音乐一点启动时间
+  }, 800); // 延迟800ms让音乐有时间开始播放
 }
 
 /**
