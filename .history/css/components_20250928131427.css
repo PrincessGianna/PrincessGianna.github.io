@@ -1857,66 +1857,6 @@
   .handwriting-line:nth-child(30) {
     animation-delay: 8.7s;
   }
-  .handwriting-line:nth-child(31) {
-    animation-delay: 9s;
-  }
-  .handwriting-line:nth-child(32) {
-    animation-delay: 9.3s;
-  }
-  .handwriting-line:nth-child(33) {
-    animation-delay: 9.6s;
-  }
-  .handwriting-line:nth-child(34) {
-    animation-delay: 9.9s;
-  }
-  .handwriting-line:nth-child(35) {
-    animation-delay: 10.2s;
-  }
-  .handwriting-line:nth-child(36) {
-    animation-delay: 10.5s;
-  }
-  .handwriting-line:nth-child(37) {
-    animation-delay: 10.8s;
-  }
-  .handwriting-line:nth-child(38) {
-    animation-delay: 11.1s;
-  }
-  .handwriting-line:nth-child(39) {
-    animation-delay: 11.4s;
-  }
-  .handwriting-line:nth-child(40) {
-    animation-delay: 11.7s;
-  }
-  .handwriting-line:nth-child(41) {
-    animation-delay: 12s;
-  }
-  .handwriting-line:nth-child(42) {
-    animation-delay: 12.3s;
-  }
-  .handwriting-line:nth-child(43) {
-    animation-delay: 12.6s;
-  }
-  .handwriting-line:nth-child(44) {
-    animation-delay: 12.9s;
-  }
-  .handwriting-line:nth-child(45) {
-    animation-delay: 13.2s;
-  }
-  .handwriting-line:nth-child(46) {
-    animation-delay: 13.5s;
-  }
-  .handwriting-line:nth-child(47) {
-    animation-delay: 13.8s;
-  }
-  .handwriting-line:nth-child(48) {
-    animation-delay: 14.1s;
-  }
-  .handwriting-line:nth-child(49) {
-    animation-delay: 14.4s;
-  }
-  .handwriting-line:nth-child(50) {
-    animation-delay: 14.7s;
-  }
 
   /* 纸张质感背景 - 更像真实信纸 */
   .love-page {
@@ -3151,5 +3091,300 @@
   }
   75% {
     transform: translateX(0.5px);
+  }
+}
+
+/* ===============================
+   翻页书样式 (Turn.js)
+   =============================== */
+.flipbook-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(255, 248, 220, 0.1));
+  border-radius: var(--radius-medium);
+  margin-bottom: var(--spacing-lg);
+  border: 1px solid rgba(255, 182, 193, 0.2);
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: linear-gradient(135deg, var(--primary-pink), var(--primary-pink-light));
+  color: var(--background-white);
+  border: none;
+  border-radius: var(--radius-medium);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.3);
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.control-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.page-indicator {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: var(--font-weight-medium);
+  background: rgba(255, 255, 255, 0.8);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-medium);
+  border: 1px solid rgba(255, 182, 193, 0.2);
+}
+
+.flipbook-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.flipbook {
+  width: 600px;
+  height: 450px;
+  background: transparent;
+  margin: 0 auto;
+  position: relative;
+}
+
+.flipbook .page {
+  width: 300px;
+  height: 450px;
+  background: linear-gradient(135deg, #fefefe 0%, #faf9f9 100%);
+  border: 1px solid rgba(173, 206, 212, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.flipbook .page.hard {
+  background: linear-gradient(135deg, #fcfcfc 0%, #f8f7f7 100%);
+  border: 1px solid rgba(173, 206, 212, 0.2);
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 为翻页书中的love-page添加特殊样式 */
+.flipbook .love-page {
+  width: 100%;
+  height: 100%;
+  padding: 40px 30px 30px 60px !important;
+  box-sizing: border-box;
+  position: relative;
+  
+  /* 保持原有的信纸背景效果 */
+  background: 
+    /* 红色边线 */ linear-gradient(
+      90deg,
+      transparent 50px,
+      #ff6b9d 50px,
+      #ff6b9d 52px,
+      transparent 52px
+    ),
+    /* 横线 */
+      linear-gradient(
+        0deg,
+        transparent 0px,
+        rgba(173, 206, 212, 0.3) 1px,
+        transparent 2px
+      );
+  background-size: 100% 100%, 100% 28px;
+  background-color: transparent;
+}
+
+.flipbook .love-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 52px;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #ff6b9d 5%,
+    #ff6b9d 95%,
+    transparent 100%
+  );
+  opacity: 0.4;
+  box-shadow: 1px 0 0 rgba(255, 107, 157, 0.1);
+}
+
+/* 调整翻页书中的手写样式 */
+.flipbook .handwriting-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  padding: 15px 0;
+}
+
+.flipbook .page-title.handwriting {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.flipbook .page-date.handwriting {
+  font-size: 0.85rem;
+  text-align: right;
+  margin-bottom: 10px;
+  color: var(--text-gray);
+}
+
+.flipbook .handwriting-line {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.flipbook .handwriting-line.signature {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.flip-hint {
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+.flip-hint .hint-text {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  background: rgba(255, 182, 193, 0.1);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-medium);
+  display: inline-block;
+  border: 1px dashed rgba(255, 182, 193, 0.3);
+}
+
+/* Turn.js 样式覆盖 */
+.flipbook .even {
+  background: linear-gradient(135deg, #fefefe 0%, #faf9f9 100%);
+}
+
+.flipbook .odd {
+  background: linear-gradient(135deg, #fcfcfc 0%, #f8f7f7 100%);
+}
+
+/* 翻页阴影效果 */
+.flipbook .gradient {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.05) 50%,
+    transparent 100%
+  );
+}
+
+.flipbook .shadow {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 10%,
+    transparent 100%
+  );
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .flipbook {
+    width: 340px;
+    height: 280px;
+  }
+  
+  .flipbook .page {
+    width: 170px;
+    height: 280px;
+  }
+  
+  .flipbook .love-page {
+    padding: 25px 20px 20px 45px !important;
+  }
+  
+  .flipbook .love-page::before {
+    left: 38px;
+  }
+  
+  .flipbook-controls {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    text-align: center;
+  }
+  
+  .control-btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.8rem;
+  }
+  
+  .page-indicator {
+    order: -1;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .flipbook .handwriting-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  
+  .flipbook .page-title.handwriting {
+    font-size: 1.1rem;
+  }
+  
+  .flipbook .handwriting-line {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .flipbook {
+    width: 280px;
+    height: 240px;
+  }
+  
+  .flipbook .page {
+    width: 140px;
+    height: 240px;
+  }
+  
+  .flipbook .love-page {
+    padding: 20px 15px 15px 35px !important;
+  }
+  
+  .flipbook .love-page::before {
+    left: 32px;
+  }
+  
+  .flipbook .handwriting-text {
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  
+  .flipbook .page-title.handwriting {
+    font-size: 1rem;
+  }
+  
+  .flipbook .handwriting-line {
+    font-size: 0.7rem;
+    margin: 3px 0;
   }
 }

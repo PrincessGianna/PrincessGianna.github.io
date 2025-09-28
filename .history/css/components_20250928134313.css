@@ -1887,36 +1887,6 @@
   .handwriting-line:nth-child(40) {
     animation-delay: 11.7s;
   }
-  .handwriting-line:nth-child(41) {
-    animation-delay: 12s;
-  }
-  .handwriting-line:nth-child(42) {
-    animation-delay: 12.3s;
-  }
-  .handwriting-line:nth-child(43) {
-    animation-delay: 12.6s;
-  }
-  .handwriting-line:nth-child(44) {
-    animation-delay: 12.9s;
-  }
-  .handwriting-line:nth-child(45) {
-    animation-delay: 13.2s;
-  }
-  .handwriting-line:nth-child(46) {
-    animation-delay: 13.5s;
-  }
-  .handwriting-line:nth-child(47) {
-    animation-delay: 13.8s;
-  }
-  .handwriting-line:nth-child(48) {
-    animation-delay: 14.1s;
-  }
-  .handwriting-line:nth-child(49) {
-    animation-delay: 14.4s;
-  }
-  .handwriting-line:nth-child(50) {
-    animation-delay: 14.7s;
-  }
 
   /* 纸张质感背景 - 更像真实信纸 */
   .love-page {

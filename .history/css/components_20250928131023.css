@@ -1857,128 +1857,143 @@
   .handwriting-line:nth-child(30) {
     animation-delay: 8.7s;
   }
-  .handwriting-line:nth-child(31) {
-    animation-delay: 9s;
-  }
-  .handwriting-line:nth-child(32) {
-    animation-delay: 9.3s;
-  }
-  .handwriting-line:nth-child(33) {
-    animation-delay: 9.6s;
-  }
-  .handwriting-line:nth-child(34) {
-    animation-delay: 9.9s;
-  }
-  .handwriting-line:nth-child(35) {
-    animation-delay: 10.2s;
-  }
-  .handwriting-line:nth-child(36) {
-    animation-delay: 10.5s;
-  }
-  .handwriting-line:nth-child(37) {
-    animation-delay: 10.8s;
-  }
-  .handwriting-line:nth-child(38) {
-    animation-delay: 11.1s;
-  }
-  .handwriting-line:nth-child(39) {
-    animation-delay: 11.4s;
-  }
-  .handwriting-line:nth-child(40) {
-    animation-delay: 11.7s;
-  }
-  .handwriting-line:nth-child(41) {
-    animation-delay: 12s;
-  }
-  .handwriting-line:nth-child(42) {
-    animation-delay: 12.3s;
-  }
-  .handwriting-line:nth-child(43) {
-    animation-delay: 12.6s;
-  }
-  .handwriting-line:nth-child(44) {
-    animation-delay: 12.9s;
-  }
-  .handwriting-line:nth-child(45) {
-    animation-delay: 13.2s;
-  }
-  .handwriting-line:nth-child(46) {
-    animation-delay: 13.5s;
-  }
-  .handwriting-line:nth-child(47) {
-    animation-delay: 13.8s;
-  }
-  .handwriting-line:nth-child(48) {
-    animation-delay: 14.1s;
-  }
-  .handwriting-line:nth-child(49) {
-    animation-delay: 14.4s;
-  }
-  .handwriting-line:nth-child(50) {
-    animation-delay: 14.7s;
-  }
 
   /* 纸张质感背景 - 更像真实信纸 */
   .love-page {
+    /* 基础纸张色 */
+    background-color: #fcfcfc;
+    
+    /* 多层背景构建真实纸张效果 */
     background: 
-      /* 红色边线 */ linear-gradient(
+      /* 装订孔 */
+      radial-gradient(circle at 40px 60px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 120px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 180px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 240px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 300px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 360px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 420px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 480px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      radial-gradient(circle at 40px 540px, rgba(0, 0, 0, 0.1) 2px, transparent 3px),
+      
+      /* 红色边线 - 更真实的颜色和位置 */
+      linear-gradient(
         90deg,
-        transparent 70px,
-        #ff6b9d 70px,
-        #ff6b9d 72px,
-        transparent 72px
+        transparent 78px,
+        #e74c3c 78px,
+        #e74c3c 80px,
+        transparent 80px
       ),
-      /* 横线 */
-        linear-gradient(
-          0deg,
-          transparent 0px,
-          rgba(173, 206, 212, 0.3) 1px,
-          transparent 2px
-        );
-    background-size: 100% 100%, 100% 32px;
-    background-color: #fefefe;
-    background-image: 
-      /* 纸张纹理 */ radial-gradient(
-        circle at 20% 80%,
-        rgba(120, 119, 198, 0.02) 0%,
-        transparent 50%
+      
+      /* 横线 - 更像学校作业纸 */
+      linear-gradient(
+        0deg,
+        transparent 0px,
+        rgba(52, 152, 219, 0.15) 0.5px,
+        transparent 1px
       ),
-      radial-gradient(
-        circle at 80% 20%,
-        rgba(255, 107, 157, 0.02) 0%,
-        transparent 50%
+      
+      /* 纸张纤维纹理 */
+      radial-gradient(ellipse at 10% 20%, rgba(0, 0, 0, 0.01) 0%, transparent 40%),
+      radial-gradient(ellipse at 90% 80%, rgba(0, 0, 0, 0.01) 0%, transparent 40%),
+      radial-gradient(ellipse at 30% 60%, rgba(0, 0, 0, 0.008) 0%, transparent 35%),
+      radial-gradient(ellipse at 70% 40%, rgba(0, 0, 0, 0.008) 0%, transparent 35%),
+      
+      /* 细微的纸张不平整感 */
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 20%,
+        rgba(0, 0, 0, 0.01) 50%,
+        transparent 80%,
+        rgba(255, 255, 255, 0.02) 100%
       ),
-      radial-gradient(
-        circle at 40% 40%,
-        rgba(173, 206, 212, 0.02) 0%,
-        transparent 50%
-      );
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.02);
-    padding: 60px 60px 60px 100px !important;
+      
+      /* 基础纸张色 */
+      linear-gradient(to bottom, #fcfcfc 0%, #fafafa 100%);
+    
+    background-size: 
+      100% 100%, /* 装订孔 */
+      100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+      100% 100%, /* 红线 */
+      100% 28px, /* 横线 */
+      200px 150px, 180px 120px, 160px 100px, 140px 90px, /* 纸张纤维 */
+      100% 100%, /* 不平整感 */
+      100% 100%; /* 基础色 */
+    
+    border-radius: 8px;
+    box-shadow: 
+      /* 主要阴影 */
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      /* 纸张边缘高光 */
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset -1px 0 0 rgba(255, 255, 255, 0.5),
+      inset 1px 0 0 rgba(255, 255, 255, 0.5),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.03),
+      /* 纸张厚度感 */
+      0 0 0 1px rgba(0, 0, 0, 0.04);
+    
+    padding: 70px 70px 70px 110px !important;
     position: relative;
     min-height: 650px;
-    border: 1px solid rgba(173, 206, 212, 0.15);
+    border: none;
     overflow: hidden;
+    
+    /* 轻微的纸张倾斜 */
+    transform: rotate(-0.2deg);
   }
 
+  /* 纸张边缘撕裂效果 */
   .love-page::before {
     content: "";
     position: absolute;
     top: 0;
-    left: 72px;
-    width: 1px;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      #ff6b9d 5%,
-      #ff6b9d 95%,
-      transparent 100%
-    );
-    opacity: 0.4;
-    box-shadow: 1px 0 0 rgba(255, 107, 157, 0.1);
+    background: 
+      /* 左侧撕裂边缘 */
+      linear-gradient(
+        90deg,
+        transparent 0px,
+        rgba(0, 0, 0, 0.02) 1px,
+        transparent 2px,
+        transparent 15px,
+        rgba(0, 0, 0, 0.01) 16px,
+        transparent 17px
+      ),
+      /* 顶部轻微折痕 */
+      linear-gradient(
+        0deg,
+        transparent 0px,
+        rgba(0, 0, 0, 0.015) 1px,
+        transparent 2px
+      );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  
+  /* 纸张折痕和污渍效果 */
+  .love-page::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 15px;
+    height: 15px;
+    background: 
+      radial-gradient(circle, rgba(0, 0, 0, 0.02) 30%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(0, 0, 0, 0.01) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    
+    /* 添加多个小污渍 */
+    box-shadow: 
+      -120px 50px 0 -2px rgba(0, 0, 0, 0.008),
+      -200px 120px 0 -3px rgba(0, 0, 0, 0.006),
+      -80px 200px 0 -1px rgba(0, 0, 0, 0.01),
+      -300px 80px 0 -4px rgba(0, 0, 0, 0.005);
   }
 
   /* 页面标题样式 */
@@ -3151,5 +3166,438 @@
   }
   75% {
     transform: translateX(0.5px);
+  }
+}
+
+/* ===============================
+   信件翻页控制样式
+   =============================== */
+.letter-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 193, 0.1),
+    rgba(255, 248, 220, 0.15)
+  );
+  border-bottom: 2px solid rgba(255, 182, 193, 0.2);
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius-medium) var(--radius-medium) 0 0;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 248, 250, 0.8)
+  );
+  border: 2px solid rgba(255, 182, 193, 0.3);
+  border-radius: var(--radius-large);
+  color: var(--text-dark);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
+  min-width: 100px;
+  justify-content: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(200, 200, 200, 0.3);
+  border-color: rgba(200, 200, 200, 0.5);
+  color: #999;
+}
+
+.nav-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.nav-btn:hover:not(:disabled) svg {
+  transform: scale(1.1);
+}
+
+.prev-btn svg {
+  margin-right: 2px;
+}
+
+.next-btn svg {
+  margin-left: 2px;
+}
+
+.page-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 193, 0.2),
+    rgba(255, 248, 220, 0.25)
+  );
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-large);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+  box-shadow: inset 0 1px 3px rgba(255, 182, 193, 0.1);
+}
+
+.current-page {
+  color: #ff6b9d;
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.total-pages {
+  color: var(--text-gray);
+}
+
+/* 信件页面翻页动画 */
+.love-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(30px) rotateY(-15deg);
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: left center;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.love-page.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0) rotateY(0deg);
+}
+
+.love-page.prev {
+  transform: translateX(-30px) rotateY(15deg);
+}
+
+/* 真实纸质翻页效果 */
+.love-page {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.love-page.flipping-out {
+  animation: realPageFlipOut 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  transform-origin: left center;
+}
+
+.love-page.flipping-in {
+  animation: realPageFlipIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  transform-origin: left center;
+}
+
+/* 更真实的翻页动画 - 向右翻页 */
+@keyframes realPageFlipOut {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg) translateZ(0px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 0 0 rgba(0, 0, 0, 0);
+    filter: brightness(1);
+  }
+  15% {
+    transform: rotateY(-5deg) translateZ(5px);
+    box-shadow: 2px 4px 15px rgba(0, 0, 0, 0.15), -2px 0 8px rgba(0, 0, 0, 0.05);
+    filter: brightness(0.98);
+  }
+  30% {
+    transform: rotateY(-15deg) translateZ(10px);
+    box-shadow: 5px 8px 25px rgba(0, 0, 0, 0.2), -5px 0 15px rgba(0, 0, 0, 0.08);
+    filter: brightness(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: rotateY(-45deg) translateZ(15px);
+    box-shadow: 10px 15px 35px rgba(0, 0, 0, 0.25),
+      -8px 0 20px rgba(0, 0, 0, 0.12);
+    filter: brightness(0.9);
+  }
+  70% {
+    opacity: 0.6;
+    transform: rotateY(-75deg) translateZ(12px);
+    box-shadow: 15px 20px 40px rgba(0, 0, 0, 0.3),
+      -10px 0 25px rgba(0, 0, 0, 0.15);
+    filter: brightness(0.85);
+  }
+  85% {
+    opacity: 0.3;
+    transform: rotateY(-105deg) translateZ(8px);
+    box-shadow: 18px 25px 45px rgba(0, 0, 0, 0.35),
+      -12px 0 30px rgba(0, 0, 0, 0.18);
+    filter: brightness(0.8);
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: rotateY(-180deg) translateZ(0px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
+    filter: brightness(0.7);
+  }
+}
+
+/* 新页面翻入动画 */
+@keyframes realPageFlipIn {
+  0% {
+    opacity: 0;
+    visibility: visible;
+    transform: rotateY(180deg) translateZ(0px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
+    filter: brightness(0.7);
+  }
+  15% {
+    opacity: 0.3;
+    transform: rotateY(105deg) translateZ(8px);
+    box-shadow: -18px 25px 45px rgba(0, 0, 0, 0.35),
+      12px 0 30px rgba(0, 0, 0, 0.18);
+    filter: brightness(0.8);
+  }
+  30% {
+    opacity: 0.6;
+    transform: rotateY(75deg) translateZ(12px);
+    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.3),
+      10px 0 25px rgba(0, 0, 0, 0.15);
+    filter: brightness(0.85);
+  }
+  50% {
+    opacity: 0.9;
+    transform: rotateY(45deg) translateZ(15px);
+    box-shadow: -10px 15px 35px rgba(0, 0, 0, 0.25),
+      8px 0 20px rgba(0, 0, 0, 0.12);
+    filter: brightness(0.9);
+  }
+  70% {
+    transform: rotateY(15deg) translateZ(10px);
+    box-shadow: -5px 8px 25px rgba(0, 0, 0, 0.2), 5px 0 15px rgba(0, 0, 0, 0.08);
+    filter: brightness(0.95);
+  }
+  85% {
+    transform: rotateY(5deg) translateZ(5px);
+    box-shadow: -2px 4px 15px rgba(0, 0, 0, 0.15), 2px 0 8px rgba(0, 0, 0, 0.05);
+    filter: brightness(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) translateZ(0px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 0 0 rgba(0, 0, 0, 0);
+    filter: brightness(1);
+  }
+}
+
+/* 翻页时的3D容器效果 */
+.love-pages {
+  position: relative;
+  min-height: 500px;
+  perspective: 1200px;
+  perspective-origin: center center;
+  transform-style: preserve-3d;
+}
+
+/* 翻页时的整体容器状态 */
+.love-pages.flipping {
+  perspective: 1500px;
+}
+
+/* 翻页时的纸张弯曲效果 */
+.love-page.flipping-out,
+.love-page.flipping-in {
+  /* 翻页时临时覆盖背景 */
+  background-image: 
+    /* 弯曲阴影 */
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.02) 20%,
+      rgba(0, 0, 0, 0.05) 50%,
+      rgba(0, 0, 0, 0.02) 80%,
+      transparent 100%
+    ),
+    /* 边缘光效 */
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 5%,
+      transparent 95%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+}
+
+/* 翻页时的纸张厚度效果 */
+.love-page.flipping-out,
+.love-page.flipping-in {
+  /* 增加纸张厚度感 */
+  border-right: 2px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* 信纸特殊装饰 */
+.love-page {
+  position: relative;
+}
+
+/* 添加纸张角落折痕 */
+.love-page:before {
+  /* 原有样式保持不变 */
+}
+
+/* 添加右上角折痕 */
+.love-page:nth-child(odd):after {
+  /* 添加轻微的右上角折痕效果 */
+  box-shadow: 
+    -120px 50px 0 -2px rgba(0, 0, 0, 0.008),
+    -200px 120px 0 -3px rgba(0, 0, 0, 0.006),
+    -80px 200px 0 -1px rgba(0, 0, 0, 0.01),
+    -300px 80px 0 -4px rgba(0, 0, 0, 0.005),
+    /* 右上角折痕 */
+    calc(100% - 20px) 10px 0 -8px rgba(0, 0, 0, 0.03);
+}
+
+/* 翻页按钮增强交互 */
+.page-nav-btn {
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-nav-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.page-nav-btn:active::before {
+  width: 100px;
+  height: 100px;
+}
+
+.page-nav-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.page-nav-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 页码指示器增强 */
+.page-indicator {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.love-pages::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px;
+  right: -10px;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.05) 2%,
+    rgba(0, 0, 0, 0.1) 5%,
+    transparent 8%,
+    transparent 92%,
+    rgba(0, 0, 0, 0.1) 95%,
+    rgba(0, 0, 0, 0.05) 98%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.love-pages.flipping::before {
+  opacity: 1;
+}
+
+/* 响应式翻页控制 */
+@media (max-width: 768px) {
+  .letter-navigation {
+    padding: var(--spacing-sm) var(--spacing-md);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .nav-btn {
+    min-width: 80px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.8rem;
+  }
+
+  .nav-btn span {
+    display: none;
+  }
+
+  .nav-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .page-indicator {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .love-pages {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .letter-navigation {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .nav-btn {
+    min-width: 60px;
+    padding: var(--spacing-xs);
+  }
+
+  .page-indicator {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .love-pages {
+    min-height: 350px;
   }
 }
