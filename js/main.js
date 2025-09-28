@@ -41,8 +41,8 @@ function initializeApp() {
   // 初始化导航
   initializeNavigation();
 
-  // 初始化音乐播放器
-  initializeMusicPlayer();
+  // 音乐播放器已替换为全局音乐管理器
+  // initializeMusicPlayer();
 
   // 初始化页面特定功能
   initializePageFeatures();
