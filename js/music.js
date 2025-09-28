@@ -34,12 +34,18 @@ class MusicManager {
 
     this.createAudioElement();
 
-    // 只有当之前在播放时才恢复播放状态
+    // 优先恢复之前的播放状态，如果没有播放状态则尝试自动播放
     if (isPlaying) {
       console.log("MusicManager: 恢复播放状态...");
       setTimeout(() => {
         this.play();
       }, 100);
+    } else {
+      // 如果之前没有播放状态，尝试自动播放音乐
+      console.log("MusicManager: 尝试自动播放音乐...");
+      setTimeout(() => {
+        this.play();
+      }, 500);
     }
 
     // 监听页面卸载事件，保存音乐状态
@@ -99,8 +105,19 @@ class MusicManager {
 
       // 更新音频设置
       this.audio.volume = this.volume;
-      if (this.currentTime > 0 && this.audio.readyState >= 1) {
-        this.audio.currentTime = this.currentTime;
+
+      // 如果音频元素已就绪且有保存的时间，恢复播放位置
+      if (this.currentTime > 0) {
+        const restoreTime = () => {
+          if (this.audio.readyState >= 1) {
+            console.log("MusicManager: 恢复播放时间到", this.currentTime);
+            this.audio.currentTime = this.currentTime;
+          } else {
+            // 如果音频还没准备好，等待一下再尝试
+            setTimeout(restoreTime, 100);
+          }
+        };
+        restoreTime();
       }
 
       return;
@@ -125,12 +142,16 @@ class MusicManager {
       }
     });
 
-    // 监听时间更新
+    // 监听时间更新，但减少保存频率以提高性能
+    let lastSaveTime = 0;
     this.audio.addEventListener("timeupdate", () => {
       this.currentTime = this.audio.currentTime;
-      // 每5秒保存一次状态，减少性能影响
-      if (Math.floor(this.currentTime) % 5 === 0) {
+
+      // 每2秒保存一次状态
+      const now = Date.now();
+      if (now - lastSaveTime > 2000) {
         this.saveState();
+        lastSaveTime = now;
       }
     });
 
@@ -177,7 +198,80 @@ class MusicManager {
       localStorage.setItem("musicIsPlaying", "true");
       console.log("MusicManager: 音频播放成功");
     } catch (error) {
-      console.log("MusicManager: 音频自动播放被阻止，用户需要手动启动:", error);
+      console.log("MusicManager: 音频自动播放被阻止，添加用户交互监听器:", error);
+
+      // 如果自动播放被阻止，添加用户交互监听器
+      this.addUserInteractionListeners();
+    }
+  }
+
+  // 添加用户交互监听器，在用户首次交互时播放音乐
+  addUserInteractionListeners() {
+    const startMusicOnInteraction = async (event) => {
+      console.log("MusicManager: 检测到用户交互，尝试播放音乐", event.type);
+
+      try {
+        await this.audio.play();
+        this.isPlaying = true;
+        localStorage.setItem("musicIsPlaying", "true");
+        console.log("MusicManager: 用户交互后音频播放成功");
+
+        // 移除监听器，避免重复触发
+        this.removeUserInteractionListeners();
+      } catch (error) {
+        console.log("MusicManager: 用户交互后播放仍然失败:", error);
+      }
+    };
+
+    // 监听各种用户交互事件，包括移动端专用事件
+    const events = [
+      'click', 'touchstart', 'touchend', 'touchmove',
+      'keydown', 'scroll', 'mousemove', 'mousedown',
+      'gesturestart', 'gesturechange', 'gestureend'
+    ];
+
+    events.forEach(event => {
+      document.addEventListener(event, startMusicOnInteraction, {
+        once: true, // 只触发一次
+        passive: true
+      });
+    });
+
+    // 移动端特殊处理：监听页面滚动
+    window.addEventListener('scroll', startMusicOnInteraction, {
+      once: true,
+      passive: true
+    });
+
+    // 移动端特殊处理：监听触摸事件
+    if ('ontouchstart' in window) {
+      document.addEventListener('touchstart', startMusicOnInteraction, {
+        once: true,
+        passive: true
+      });
+    }
+
+    // 保存监听器引用以便后续移除
+    this.userInteractionHandler = startMusicOnInteraction;
+    this.userInteractionEvents = events;
+
+    console.log("MusicManager: 已添加用户交互监听器（包含移动端优化）");
+  }
+
+  // 移除用户交互监听器
+  removeUserInteractionListeners() {
+    if (this.userInteractionHandler && this.userInteractionEvents) {
+      this.userInteractionEvents.forEach(event => {
+        document.removeEventListener(event, this.userInteractionHandler);
+      });
+
+      // 移除window上的监听器
+      window.removeEventListener('scroll', this.userInteractionHandler);
+
+      this.userInteractionHandler = null;
+      this.userInteractionEvents = null;
+
+      console.log("MusicManager: 已移除用户交互监听器");
     }
   }
 
@@ -214,15 +308,6 @@ class MusicManager {
     }
   }
 
-  // 为首页按钮添加启动音乐的方法
-  async startMusicFromButton() {
-    console.log("MusicManager: 从按钮启动音乐...");
-
-    if (!this.isPlaying) {
-      await this.play();
-    }
-  }
-
   async togglePlayPause() {
     if (this.isPlaying) {
       this.pause();
@@ -253,6 +338,15 @@ function initMusicManager() {
         "initMusicManager: 音频元素已存在，当前时间:",
         globalMusicManager.audio.currentTime
       );
+    }
+
+    // 页面切换时，检查是否需要继续播放
+    const shouldPlay = localStorage.getItem("musicIsPlaying") === "true";
+    if (shouldPlay && globalMusicManager.audio && globalMusicManager.audio.paused) {
+      console.log("initMusicManager: 页面切换，恢复音乐播放");
+      setTimeout(() => {
+        globalMusicManager.play();
+      }, 100);
     }
 
     return;
