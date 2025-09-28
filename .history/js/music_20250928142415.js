@@ -210,68 +210,6 @@ class MusicManager {
       return;
     }
 
-    // 添加CSS动画样式到页面
-    if (!document.getElementById("music-btn-animations")) {
-      const style = document.createElement("style");
-      style.id = "music-btn-animations";
-      style.textContent = `
-        @keyframes musicBtnPulse {
-          0%, 100% { 
-            transform: scale(1);
-            box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4), 0 4px 15px rgba(0, 0, 0, 0.1);
-          }
-          50% { 
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(255, 154, 158, 0.5), 0 5px 18px rgba(0, 0, 0, 0.12);
-          }
-        }
-        
-        @keyframes musicBtnGlow {
-          0%, 100% { 
-            filter: brightness(1);
-          }
-          50% { 
-            filter: brightness(1.1);
-          }
-        }
-        
-        .music-btn-playing {
-          animation: musicBtnPulse 2s ease-in-out infinite, musicBtnGlow 3s ease-in-out infinite;
-        }
-        
-        /* 确保浮动按钮始终可见 */
-        #music-control-btn {
-          position: fixed !important;
-          z-index: 999999 !important;
-          pointer-events: auto !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-        }
-        
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-          #music-control-btn {
-            bottom: 20px !important;
-            right: 20px !important;
-            width: 50px !important;
-            height: 50px !important;
-            font-size: 20px !important;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          #music-control-btn {
-            bottom: 15px !important;
-            right: 15px !important;
-            width: 45px !important;
-            height: 45px !important;
-            font-size: 18px !important;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
     // 创建音乐控制按钮
     const musicControlBtn = document.createElement("div");
     musicControlBtn.id = "music-control-btn";
@@ -285,7 +223,7 @@ class MusicManager {
       border-radius: 50%;
       box-shadow: 0 8px 25px rgba(255, 154, 158, 0.4), 0 4px 15px rgba(0, 0, 0, 0.1);
       cursor: pointer;
-      z-index: 999999;
+      z-index: 10000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -295,10 +233,6 @@ class MusicManager {
       backdrop-filter: blur(10px);
       user-select: none;
       border: 2px solid rgba(255, 255, 255, 0.3);
-      will-change: transform;
-      pointer-events: auto;
-      visibility: visible;
-      opacity: 1;
     `;
 
     // 设置初始状态
@@ -312,14 +246,12 @@ class MusicManager {
     // 悬停效果
     musicControlBtn.addEventListener("mouseenter", () => {
       musicControlBtn.style.transform = "scale(1.1) translateY(-3px)";
-      musicControlBtn.style.boxShadow =
-        "0 12px 35px rgba(255, 154, 158, 0.6), 0 6px 20px rgba(0, 0, 0, 0.15)";
+      musicControlBtn.style.boxShadow = "0 12px 35px rgba(255, 154, 158, 0.6), 0 6px 20px rgba(0, 0, 0, 0.15)";
     });
 
     musicControlBtn.addEventListener("mouseleave", () => {
       musicControlBtn.style.transform = "scale(1) translateY(0)";
-      musicControlBtn.style.boxShadow =
-        "0 8px 25px rgba(255, 154, 158, 0.4), 0 4px 15px rgba(0, 0, 0, 0.1)";
+      musicControlBtn.style.boxShadow = "0 8px 25px rgba(255, 154, 158, 0.4), 0 4px 15px rgba(0, 0, 0, 0.1)";
     });
 
     // 添加点击动画
@@ -332,73 +264,6 @@ class MusicManager {
     });
 
     document.body.appendChild(musicControlBtn);
-
-    // 确保按钮始终在最顶层
-    this.ensureButtonOnTop();
-  }
-
-  // 确保浮动按钮始终在最顶层
-  ensureButtonOnTop() {
-    const musicControlBtn = document.getElementById("music-control-btn");
-    if (musicControlBtn) {
-      // 定期检查并确保按钮在最顶层
-      const observer = new MutationObserver(() => {
-        if (musicControlBtn.style.zIndex !== "999999") {
-          musicControlBtn.style.zIndex = "999999";
-        }
-      });
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ["style", "class"],
-      });
-
-      // 监听页面滚动和尺寸变化，确保按钮位置固定
-      let ticking = false;
-      const handleUpdate = () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            // 确保按钮保持固定位置和样式
-            if (musicControlBtn && document.body.contains(musicControlBtn)) {
-              musicControlBtn.style.position = "fixed";
-              musicControlBtn.style.zIndex = "999999";
-
-              // 响应式位置调整
-              const isMobile = window.innerWidth <= 768;
-              const isSmallMobile = window.innerWidth <= 480;
-
-              if (isSmallMobile) {
-                musicControlBtn.style.bottom = "15px";
-                musicControlBtn.style.right = "15px";
-              } else if (isMobile) {
-                musicControlBtn.style.bottom = "20px";
-                musicControlBtn.style.right = "20px";
-              } else {
-                musicControlBtn.style.bottom = "30px";
-                musicControlBtn.style.right = "30px";
-              }
-            }
-            ticking = false;
-          });
-          ticking = true;
-        }
-      };
-
-      window.addEventListener("scroll", handleUpdate, { passive: true });
-      window.addEventListener("resize", handleUpdate, { passive: true });
-      window.addEventListener("orientationchange", handleUpdate, {
-        passive: true,
-      });
-
-      // 页面加载完成后再次确保位置
-      if (document.readyState === "complete") {
-        handleUpdate();
-      } else {
-        window.addEventListener("load", handleUpdate);
-      }
-    }
   }
 
   updateMusicControlBtn(btn = null) {
@@ -406,25 +271,11 @@ class MusicManager {
     if (!musicControlBtn) return;
 
     if (this.isPlaying) {
-      // 暂停图标
-      musicControlBtn.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-        </svg>
-      `;
-      musicControlBtn.style.background =
-        "linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff9a9e 100%)";
-      musicControlBtn.classList.add("music-btn-playing");
+      musicControlBtn.innerHTML = "🎵 暂停播放背景音乐";
+      musicControlBtn.style.background = "rgba(255, 200, 200, 0.9)";
     } else {
-      // 播放图标
-      musicControlBtn.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5v14l11-7z"/>
-        </svg>
-      `;
-      musicControlBtn.style.background =
-        "linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%)";
-      musicControlBtn.classList.remove("music-btn-playing");
+      musicControlBtn.innerHTML = "🎵 开始播放背景音乐";
+      musicControlBtn.style.background = "rgba(200, 255, 200, 0.9)";
     }
   }
 

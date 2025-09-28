@@ -332,7 +332,7 @@ class MusicManager {
     });
 
     document.body.appendChild(musicControlBtn);
-
+    
     // 确保按钮始终在最顶层
     this.ensureButtonOnTop();
   }
@@ -347,14 +347,14 @@ class MusicManager {
           musicControlBtn.style.zIndex = "999999";
         }
       });
-
+      
       observer.observe(document.body, {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeFilter: ["style", "class"],
+        attributeFilter: ['style', 'class']
       });
-
+      
       // 监听页面滚动和尺寸变化，确保按钮位置固定
       let ticking = false;
       const handleUpdate = () => {
@@ -364,11 +364,11 @@ class MusicManager {
             if (musicControlBtn && document.body.contains(musicControlBtn)) {
               musicControlBtn.style.position = "fixed";
               musicControlBtn.style.zIndex = "999999";
-
+              
               // 响应式位置调整
               const isMobile = window.innerWidth <= 768;
               const isSmallMobile = window.innerWidth <= 480;
-
+              
               if (isSmallMobile) {
                 musicControlBtn.style.bottom = "15px";
                 musicControlBtn.style.right = "15px";
@@ -385,13 +385,11 @@ class MusicManager {
           ticking = true;
         }
       };
-
+      
       window.addEventListener("scroll", handleUpdate, { passive: true });
       window.addEventListener("resize", handleUpdate, { passive: true });
-      window.addEventListener("orientationchange", handleUpdate, {
-        passive: true,
-      });
-
+      window.addEventListener("orientationchange", handleUpdate, { passive: true });
+      
       // 页面加载完成后再次确保位置
       if (document.readyState === "complete") {
         handleUpdate();
